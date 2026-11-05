@@ -1,0 +1,23 @@
+{
+    "total_trades": 179,
+    "win_rate": 39.11,
+    "profit_factor": 0.61,
+    "net_profit": -1572.15,
+    "total_return_pct": -3.14,
+    "final_equity": 48427.85,
+    "peak_equity": 50134.06,
+    "max_drawdown_usd": 1706.21,
+    "max_drawdown_pct": 3.4,
+    "sharpe_ratio": -3.07,
+    "standard_trades": 4,
+    "micro_trades": 175,
+    "exit_reasons": {
+        "TP": 67,
+        "SL": 109,
+        "TIME": 3
+    },
+    "is_halted": true,
+    "halt_reason": "HALT_DRAWDOWN_DEFENSE: Colch\u00f3n de drawdown $293.79 <= 15% de MTDD ($2000.00)",
+    "symbol": "ES",
+    "timestamp": "2026-11-04T20:48:27.698364"
+}

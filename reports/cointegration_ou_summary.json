@@ -1,0 +1,66 @@
+{
+  "strategy": "F4_Cointegracion_ES_NQ_OU",
+  "parameters": {
+    "contract_mode": "micro",
+    "s_open": 1.25,
+    "s_close": 0.25,
+    "s_stop": 3.25,
+    "k_calib": 2340,
+    "min_calib_bars": 390,
+    "n_basket_max": 3,
+    "allow_sub_baskets": true,
+    "dynamic_basket_ratio": true,
+    "phi_dll": 0.35,
+    "phi_tmdd": 0.2,
+    "source_tz": "America/Mexico_City",
+    "target_tz": "America/New_York"
+  },
+  "prop_evaluation": {
+    "status": "PASS",
+    "reason": "Profit Target Achieved",
+    "date": "2025-01-22 00:00:00-05:00",
+    "final_balance": 106041.27,
+    "net_profit": 6041.27,
+    "peak_equity": 106041.27,
+    "final_floor": 100000.0,
+    "total_days_evaluated": 16
+  },
+  "metrics": {
+    "Total Trades": 28,
+    "Winning Trades": 22,
+    "Losing Trades": 6,
+    "Win Rate (%)": 78.57,
+    "Gross Profit ($)": 7200.24,
+    "Gross Loss ($)": 1158.97,
+    "Profit Factor": 6.21,
+    "Net Profit ($)": 6041.27,
+    "Total Return (%)": 6.04,
+    "Max Drawdown ($)": 584.26,
+    "Sharpe Ratio": 13.29,
+    "Sortino Ratio": 23.2,
+    "Exit Reasons": {
+      "TAKE_PROFIT": 18,
+      "EOD_FLAT": 6,
+      "TIME_DECAY": 4
+    }
+  },
+  "cointegration_audit": {
+    "bars_evaluated": 858,
+    "valid_ou_count": 858,
+    "valid_ou_pct": 100.0,
+    "adf_passed_count": 853,
+    "adf_passed_pct": 99.42,
+    "tau_passed_count": 858,
+    "tau_passed_pct": 100.0,
+    "both_passed_count": 853,
+    "both_passed_pct": 99.42,
+    "mean_beta": 0.9049,
+    "min_beta": 0.8036,
+    "max_beta": 0.9267,
+    "mean_tau_half_min": 57.8,
+    "mean_tau_half_days": 0.15,
+    "mean_sigma_eq": 0.000916,
+    "latest_sub_basket_sl_usd": 99.79,
+    "latest_standard_basket_sl_usd": 1009.11
+  }
+}

@@ -1,0 +1,2 @@
+date,symbol,direction,contracts,is_micro,entry_time,entry_price,stop_loss,take_profit,delta_risk,exit_time,exit_price,exit_reason,gross_pnl_points,gross_pnl_usd,commissions_usd,slippage_usd,net_pnl_usd,running_equity,running_drawdown
+2026-10-09,MNQ,-1,1,True,2026-10-09 09:55:00-04:00,30996.025,31100.75,30787.075,104.475,2026-10-09 12:05:00-04:00,31101.0,STOP_LOSS,-104.975,-209.95,1.24,1.0,-211.19,49788.81,211.19000000000233

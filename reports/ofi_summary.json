@@ -1,0 +1,22 @@
+{
+    "initial_capital": 50000.0,
+    "final_equity": 48205.1,
+    "total_net_pnl_usd": -1794.9,
+    "total_return_pct": -3.59,
+    "total_trades": 117,
+    "winning_trades": 53,
+    "losing_trades": 64,
+    "win_rate_pct": 45.3,
+    "profit_factor": 0.68,
+    "gross_profit_usd": 3769.5,
+    "gross_loss_usd": 5564.4,
+    "total_commissions_usd": 692.4,
+    "total_slippage_usd": 0.0,
+    "max_drawdown_usd": 1942.1,
+    "max_drawdown_pct": 3.88,
+    "sharpe_ratio": -5.46,
+    "sortino_ratio": -8.45,
+    "is_prop_breached": false,
+    "breach_reason": "COMPLIANT (Ning\u00fan l\u00edmite violado)",
+    "data_feed_type": "Barras OHLCV Agregadas (Proxy con retardo temporal)"
+}
