@@ -8,5 +8,4 @@ data/
 reports/*.html
 reports/vault/
 
-optimization/optuna/
 *.log
