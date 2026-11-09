@@ -1,0 +1,72 @@
+[
+  {
+    "year": 2021,
+    "bars": 19734,
+    "trades": 0,
+    "win_rate": 0.0,
+    "net_pnl": 0.0,
+    "return_pct": 0.0,
+    "max_drawdown": 0.0,
+    "profit_factor": 0.0,
+    "sharpe_daily": 0.0,
+    "sortino_daily": 0.0,
+    "prop_status": "INCOMPLETE",
+    "prop_reason": "Evaluation Ongoing",
+    "exit_reasons": {}
+  },
+  {
+    "year": 2022,
+    "bars": 16284,
+    "trades": 0,
+    "win_rate": 0.0,
+    "net_pnl": 0.0,
+    "return_pct": 0.0,
+    "max_drawdown": 0.0,
+    "profit_factor": 0.0,
+    "sharpe_daily": 0.0,
+    "sortino_daily": 0.0,
+    "prop_status": "INCOMPLETE",
+    "prop_reason": "Evaluation Ongoing",
+    "exit_reasons": {}
+  },
+  {
+    "year": 2023,
+    "bars": 20280,
+    "trades": 266,
+    "win_rate": 76.69,
+    "net_pnl": 19613.76,
+    "return_pct": 39.23,
+    "max_drawdown": 506.08,
+    "profit_factor": 3.47,
+    "sharpe_daily": 7.73,
+    "sortino_daily": 11.56,
+    "prop_status": "PASS",
+    "prop_reason": "Profit Target Achieved",
+    "exit_reasons": {
+      "TAKE_PROFIT": 167,
+      "EOD_FLAT": 51,
+      "TIME_DECAY": 27,
+      "STOP_LOSS": 21
+    }
+  },
+  {
+    "year": "2021-2023_Consolidado",
+    "bars": 56298,
+    "trades": 277,
+    "win_rate": 75.81,
+    "net_pnl": 19767.39,
+    "return_pct": 39.53,
+    "max_drawdown": 645.09,
+    "profit_factor": 3.39,
+    "sharpe_daily": 4.34,
+    "sortino_daily": 4.3,
+    "prop_status": "PASS",
+    "prop_reason": "Profit Target Achieved",
+    "exit_reasons": {
+      "TAKE_PROFIT": 172,
+      "EOD_FLAT": 52,
+      "TIME_DECAY": 30,
+      "STOP_LOSS": 23
+    }
+  }
+]

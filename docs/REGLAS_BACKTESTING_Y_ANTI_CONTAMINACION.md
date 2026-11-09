@@ -12,7 +12,7 @@ El 90% de las estrategias algorítmicas que muestran resultados espectaculares e
 
 ---
 
-## 2. Las 5 Reglas de Oro No Negociables
+## 2. Las 6 Reglas de Oro No Negociables
 
 ### Regla 1: Cuarentena Estricta del Periodo Out-of-Sample (OOS)
 - **Definición**: Los datos históricos se dividen en dos universos temporales independientes:
@@ -66,6 +66,9 @@ El 90% de las estrategias algorítmicas que muestran resultados espectaculares e
   2. Mercados bajistas pronunciados (*Bear Market* / pánicos).
   3. Periodos laterales prolongados sin tendencia (*Chop / Range*).
   4. Entornos de alta volatilidad (VIX elevado) y baja volatilidad.
+
+### Regla 6: Prohibición Estricta de Calibración sobre Series Sintéticas o Simuladas
+Queda terminantemente prohibido entrenar, optimizar o calibrar parámetros de estrategias (incluyendo umbrales de reversión OU, z-score, stops y dimensionamiento de cobertura) sobre series generadas sintéticamente mediante fórmulas ad-hoc. Toda calibración In-Sample debe realizarse de forma exclusiva sobre series históricas reales de CME Globex (ES / NQ / MES / MNQ) descargadas de fuentes verificables.
 
 ---
 

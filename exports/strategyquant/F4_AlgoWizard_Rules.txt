@@ -1,0 +1,80 @@
+================================================================================
+GUÍA DE CONFIGURACIÓN VISUAL PARA ALGOWIZARD (STRATEGYQUANT X)
+Estrategia: F4 - Arbitraje Estadístico Ornstein-Uhlenbeck (Spread NQ vs ES)
+================================================================================
+
+1. PREPARACIÓN DEL ACTIVO SINTÉTICO EN DATA MANAGER
+   ------------------------------------------------
+   En StrategyQuant X (versión gratuita), el motor está optimizado para analizar
+   series de precios OHLCV. Para operar un spread de pares (Cointegración ES/NQ):
+   a. Ve a "Data Manager" -> "Add Custom Symbol".
+   b. Símbolo: SPREAD_NQ_ES
+   c. Timeframe: 5 Minutos (M5).
+   d. Importa el archivo: NQ_ES_Spread_5m_StrategyQuant.csv
+   e. Formato de columnas: Date (YYYY-MM-DD), Time (HH:MM:SS), Open, High, Low, Close, Volume.
+
+2. CONFIGURACIÓN EN ALGOWIZARD (Pestaña "Rules")
+   ---------------------------------------------
+   Si utilizas las herramientas nativas sin compilar Java Snippets, puedes aproximar
+   el S-Score de Ornstein-Uhlenbeck de forma idéntica usando una Z-Score / Bollinger Band
+   o regresión lineal en AlgoWizard:
+
+   PARÁMETROS:
+   - Período / Lookback: 60 barras
+   - Multiplicador de Entrada (Z_Entry): 1.25
+   - Multiplicador de Salida (Z_Exit): 0.50
+   - Multiplicador de Stop (Z_Stop): 3.00
+
+   REGLA 1: LONG ENTRY (Comprar Spread infravalorado)
+   IF:
+      Close[1] <= (SMA(Close, 60)[1] - 1.25 * StdDev(Close, 60)[1])
+      AND Close[1] > (SMA(Close, 60)[1] - 3.00 * StdDev(Close, 60)[1])
+   THEN:
+      Enter at Market (Next Bar Open)
+      Direction: Buy (Long)
+      Size: 1 contrato (o tamaño proporcional de microcontratos)
+
+   REGLA 2: SHORT ENTRY (Vender Spread sobrevalorado)
+   IF:
+      Close[1] >= (SMA(Close, 60)[1] + 1.25 * StdDev(Close, 60)[1])
+      AND Close[1] < (SMA(Close, 60)[1] + 3.00 * StdDev(Close, 60)[1])
+   THEN:
+      Enter at Market (Next Bar Open)
+      Direction: Sell (Short)
+      Size: 1 contrato
+
+   REGLA 3: EXIT LONG (Take Profit & Stop Loss para Long)
+   IF:
+      Position is Long
+      AND (
+         Close[1] >= (SMA(Close, 60)[1] - 0.50 * StdDev(Close, 60)[1])  -- Take Profit por reversión
+         OR Close[1] <= (SMA(Close, 60)[1] - 3.00 * StdDev(Close, 60)[1]) -- Stop Loss por ruptura
+      )
+   THEN:
+      Close Long Position at Market
+
+   REGLA 4: EXIT SHORT (Take Profit & Stop Loss para Short)
+   IF:
+      Position is Short
+      AND (
+         Close[1] <= (SMA(Close, 60)[1] + 0.50 * StdDev(Close, 60)[1])  -- Take Profit por reversión
+         OR Close[1] >= (SMA(Close, 60)[1] + 3.00 * StdDev(Close, 60)[1]) -- Stop Loss por ruptura
+      )
+   THEN:
+      Close Short Position at Market
+
+   REGLA 5: GESTIÓN DE HORARIOS PROP FIRM (Daily Flat)
+   IF:
+      Time >= 15:45:00 (Cierre de sesión regular CME)
+      AND Position != Flat
+   THEN:
+      Close All Positions (Evitar riesgo nocturno de margin y cumplir reglas de cuenta fondeada)
+
+3. ALTERNATIVA CON JAVA SNIPPET
+   ----------------------------
+   Si prefieres la estimación estocástica exacta (kappa, theta, sigma):
+   a. Ve a "Code" -> "New Indicator".
+   b. Pega el código de F4CointegrationOU_SQSnippet.java.
+   c. Haz clic en "Compile".
+   d. En AlgoWizard, tu nuevo bloque "F4CointegrationOU" aparecerá disponible como condición:
+      IF F4CointegrationOU.Signal == 1 THEN Buy...

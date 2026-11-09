@@ -1,0 +1,126 @@
+[
+  {
+    "year": 2021,
+    "k_calib": 2340,
+    "bars": 19734,
+    "start": "2021-01-03 09:30:00",
+    "end": "2021-12-30 15:55:00",
+    "base": {
+      "trades": 18,
+      "win_rate": 5.56,
+      "net_pnl": -2014.17,
+      "return_pct": -4.03,
+      "max_drawdown": 1737.9,
+      "sharpe_daily": -6.8,
+      "sortino_daily": -4.7,
+      "profit_factor": 0.03,
+      "prop_status": "FAIL",
+      "prop_reason": "Max Trailing Drawdown Breached"
+    },
+    "time_filtered": {
+      "trades": 18,
+      "win_rate": 5.56,
+      "net_pnl": -2014.17,
+      "return_pct": -4.03,
+      "max_drawdown": 1737.9,
+      "sharpe_daily": -6.8,
+      "sortino_daily": -4.7,
+      "profit_factor": 0.03,
+      "prop_status": "FAIL",
+      "prop_reason": "Max Trailing Drawdown Breached"
+    }
+  },
+  {
+    "year": 2022,
+    "k_calib": 2340,
+    "bars": 16284,
+    "start": "2022-01-03 09:35:00",
+    "end": "2022-10-14 16:15:00",
+    "base": {
+      "trades": 14,
+      "win_rate": 0.0,
+      "net_pnl": -1996.0,
+      "return_pct": -3.99,
+      "max_drawdown": 1715.98,
+      "sharpe_daily": -2.09,
+      "sortino_daily": -0.53,
+      "profit_factor": 0.0,
+      "prop_status": "INCOMPLETE",
+      "prop_reason": "Evaluation Ongoing"
+    },
+    "time_filtered": {
+      "trades": 14,
+      "win_rate": 0.0,
+      "net_pnl": -1996.0,
+      "return_pct": -3.99,
+      "max_drawdown": 1715.98,
+      "sharpe_daily": -2.09,
+      "sortino_daily": -0.53,
+      "profit_factor": 0.0,
+      "prop_status": "INCOMPLETE",
+      "prop_reason": "Evaluation Ongoing"
+    }
+  },
+  {
+    "year": 2023,
+    "k_calib": 2340,
+    "bars": 20280,
+    "start": "2023-01-02 09:30:00",
+    "end": "2023-12-29 15:55:00",
+    "base": {
+      "trades": 428,
+      "win_rate": 84.11,
+      "net_pnl": 55596.85,
+      "return_pct": 111.19,
+      "max_drawdown": 467.39,
+      "sharpe_daily": 17.23,
+      "sortino_daily": 28.14,
+      "profit_factor": 7.34,
+      "prop_status": "PASS",
+      "prop_reason": "Profit Target Achieved"
+    },
+    "time_filtered": {
+      "trades": 428,
+      "win_rate": 84.11,
+      "net_pnl": 55596.85,
+      "return_pct": 111.19,
+      "max_drawdown": 467.39,
+      "sharpe_daily": 17.23,
+      "sortino_daily": 28.14,
+      "profit_factor": 7.34,
+      "prop_status": "PASS",
+      "prop_reason": "Profit Target Achieved"
+    }
+  },
+  {
+    "year": 2026,
+    "k_calib": 390,
+    "bars": 13873,
+    "start": "2026-08-26 00:05:00",
+    "end": "2026-11-04 18:05:00",
+    "base": {
+      "trades": 4,
+      "win_rate": 25.0,
+      "net_pnl": -464.2,
+      "return_pct": -0.93,
+      "max_drawdown": 541.37,
+      "sharpe_daily": -2.14,
+      "sortino_daily": -0.59,
+      "profit_factor": 0.16,
+      "prop_status": "INCOMPLETE",
+      "prop_reason": "Evaluation Ongoing"
+    },
+    "time_filtered": {
+      "trades": 4,
+      "win_rate": 25.0,
+      "net_pnl": -464.2,
+      "return_pct": -0.93,
+      "max_drawdown": 541.37,
+      "sharpe_daily": -2.14,
+      "sortino_daily": -0.59,
+      "profit_factor": 0.16,
+      "prop_status": "INCOMPLETE",
+      "prop_reason": "Evaluation Ongoing"
+    }
+  }
+]

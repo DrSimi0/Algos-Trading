@@ -1,0 +1,295 @@
+{
+  "strategy": "F4_OPTIMIZACION_IS_N2_TRADES",
+  "trades_file": "reports\\f4_optimizacion_is_n2_trades.csv",
+  "profile": {
+    "name": "Topstep $50k Standard",
+    "capital": 50000.0,
+    "mtdd": 2000.0,
+    "dll": 1000.0,
+    "target": 3000.0
+  },
+  "erdos_renyi_expected_loss_streak": 3.01,
+  "monte_carlo": {
+    "reshuffle": {
+      "risk_of_ruin_pct": 0.0,
+      "target_before_ruin_pct": 100.0,
+      "drawdown_stats": {
+        "median_dd_usd": 609.88,
+        "p95_dd_usd": 917.22,
+        "p99_dd_usd": 1129.09,
+        "worst_case_dd_usd": 1648.94,
+        "cvar_95_dd_usd": 1043.02
+      }
+    },
+    "bootstrap": {
+      "risk_of_ruin_pct": 0.0,
+      "target_before_ruin_pct": 100.0,
+      "drawdown_stats": {
+        "median_dd_usd": 608.29,
+        "p95_dd_usd": 921.05,
+        "p99_dd_usd": 1151.02,
+        "worst_case_dd_usd": 1719.41,
+        "cvar_95_dd_usd": 1053.11
+      }
+    },
+    "session_bootstrap": {
+      "dll_violation_pct": 0.0,
+      "risk_of_ruin_pct": 0.0,
+      "daily_loss_stats": {
+        "median_worst_day_usd": 467.39,
+        "p95_worst_day_usd": 467.39,
+        "worst_day_usd": 467.39
+      },
+      "drawdown_stats": {
+        "median_dd_usd": 563.18,
+        "p95_dd_usd": 816.49,
+        "p99_dd_usd": 959.55,
+        "worst_case_dd_usd": 1290.84,
+        "cvar_95_dd_usd": 905.33
+      }
+    }
+  },
+  "deflated_sharpe_ratio": {
+    "dsr": 1.0,
+    "p_value": 0.0,
+    "observed_sr": 0.9367,
+    "observed_sr_annualized": 14.87,
+    "benchmark_sr": 0.2049,
+    "benchmark_sr_annualized": 3.25,
+    "num_trials": 50,
+    "skewness": -1.434,
+    "kurtosis": 6.089,
+    "se_sharpe": 0.09,
+    "statistically_significant": true,
+    "verdict": "🟢 ROBUSTO (DSR >= 0.95, p < 0.05 - Sin evidencia de minería de datos)"
+  },
+  "walk_forward_matrix": {
+    "matrix_results": [
+      {
+        "train_days": 60,
+        "test_days": 20,
+        "total_folds": 15,
+        "wfe_return": 94.9,
+        "wfe_sharpe": 89.9,
+        "pct_positive_windows": 100.0,
+        "total_oos_profit_usd": 45370.49,
+        "mean_is_profit_usd": 9562.53,
+        "oos_sharpe": 14.52,
+        "mean_is_sharpe": 16.16
+      },
+      {
+        "train_days": 60,
+        "test_days": 30,
+        "total_folds": 10,
+        "wfe_return": 94.6,
+        "wfe_sharpe": 90.1,
+        "pct_positive_windows": 100.0,
+        "total_oos_profit_usd": 45370.49,
+        "mean_is_profit_usd": 9595.73,
+        "oos_sharpe": 14.52,
+        "mean_is_sharpe": 16.11
+      },
+      {
+        "train_days": 60,
+        "test_days": 45,
+        "total_folds": 7,
+        "wfe_return": 90.3,
+        "wfe_sharpe": 91.8,
+        "pct_positive_windows": 100.0,
+        "total_oos_profit_usd": 45370.49,
+        "mean_is_profit_usd": 9568.47,
+        "oos_sharpe": 14.52,
+        "mean_is_sharpe": 15.81
+      },
+      {
+        "train_days": 90,
+        "test_days": 20,
+        "total_folds": 13,
+        "wfe_return": 102.2,
+        "wfe_sharpe": 94.8,
+        "pct_positive_windows": 100.0,
+        "total_oos_profit_usd": 41085.8,
+        "mean_is_profit_usd": 13919.21,
+        "oos_sharpe": 14.74,
+        "mean_is_sharpe": 15.55
+      },
+      {
+        "train_days": 90,
+        "test_days": 30,
+        "total_folds": 9,
+        "wfe_return": 97.8,
+        "wfe_sharpe": 90.2,
+        "pct_positive_windows": 100.0,
+        "total_oos_profit_usd": 41619.33,
+        "mean_is_profit_usd": 14182.05,
+        "oos_sharpe": 14.38,
+        "mean_is_sharpe": 15.95
+      },
+      {
+        "train_days": 90,
+        "test_days": 45,
+        "total_folds": 6,
+        "wfe_return": 99.2,
+        "wfe_sharpe": 91.8,
+        "pct_positive_windows": 100.0,
+        "total_oos_profit_usd": 41619.33,
+        "mean_is_profit_usd": 13978.64,
+        "oos_sharpe": 14.38,
+        "mean_is_sharpe": 15.66
+      },
+      {
+        "train_days": 120,
+        "test_days": 20,
+        "total_folds": 12,
+        "wfe_return": 101.5,
+        "wfe_sharpe": 101.5,
+        "pct_positive_windows": 100.0,
+        "total_oos_profit_usd": 38001.53,
+        "mean_is_profit_usd": 18718.46,
+        "oos_sharpe": 15.58,
+        "mean_is_sharpe": 15.35
+      },
+      {
+        "train_days": 120,
+        "test_days": 30,
+        "total_folds": 8,
+        "wfe_return": 100.6,
+        "wfe_sharpe": 98.9,
+        "pct_positive_windows": 100.0,
+        "total_oos_profit_usd": 38001.53,
+        "mean_is_profit_usd": 18885.25,
+        "oos_sharpe": 15.58,
+        "mean_is_sharpe": 15.76
+      },
+      {
+        "train_days": 120,
+        "test_days": 45,
+        "total_folds": 5,
+        "wfe_return": 107.2,
+        "wfe_sharpe": 103.8,
+        "pct_positive_windows": 100.0,
+        "total_oos_profit_usd": 37009.08,
+        "mean_is_profit_usd": 18404.22,
+        "oos_sharpe": 16.24,
+        "mean_is_sharpe": 15.65
+      }
+    ],
+    "grid_table": [
+      {
+        "train_days": 60,
+        "test_20d": "WFE=94.9% (Pos=100%)",
+        "test_30d": "WFE=94.6% (Pos=100%)",
+        "test_45d": "WFE=90.3% (Pos=100%)"
+      },
+      {
+        "train_days": 90,
+        "test_20d": "WFE=102.2% (Pos=100%)",
+        "test_30d": "WFE=97.8% (Pos=100%)",
+        "test_45d": "WFE=99.2% (Pos=100%)"
+      },
+      {
+        "train_days": 120,
+        "test_20d": "WFE=101.5% (Pos=100%)",
+        "test_30d": "WFE=100.6% (Pos=100%)",
+        "test_45d": "WFE=107.2% (Pos=100%)"
+      }
+    ],
+    "mean_wfe_return": 98.7,
+    "mean_wfe_sharpe": 94.8,
+    "pct_positive_oos_windows": 100.0,
+    "total_evaluations": 9,
+    "verdict": "🟢 EXCELENTE CONSISTENCIA WALK-FORWARD (WFE >= 60% y Positivas >= 70%)"
+  },
+  "what_if_stress": {
+    "baseline": {
+      "net_profit_usd": 55596.85,
+      "profit_factor": 7.34,
+      "win_rate_pct": 84.11,
+      "total_trades": 428,
+      "max_drawdown_usd": 467.39,
+      "worst_daily_loss_usd": 467.39,
+      "dll_violated": false,
+      "mtdd_violated": false
+    },
+    "slippage_2x": {
+      "net_profit_usd": 49570.85,
+      "profit_factor": 6.11,
+      "win_rate_pct": 82.94,
+      "total_trades": 428,
+      "max_drawdown_usd": 487.39,
+      "worst_daily_loss_usd": 487.39,
+      "dll_violated": false,
+      "mtdd_violated": false
+    },
+    "slippage_3x": {
+      "net_profit_usd": 43544.85,
+      "profit_factor": 5.07,
+      "win_rate_pct": 81.78,
+      "total_trades": 428,
+      "max_drawdown_usd": 507.39,
+      "worst_daily_loss_usd": 507.39,
+      "dll_violated": false,
+      "mtdd_violated": false
+    },
+    "top3_drop": {
+      "net_profit_usd": 54237.08,
+      "profit_factor": 7.19,
+      "win_rate_pct": 84.0,
+      "total_trades": 425,
+      "max_drawdown_usd": 467.39,
+      "worst_daily_loss_usd": 467.39,
+      "dll_violated": false,
+      "mtdd_violated": false
+    },
+    "win_pruning": {
+      "pruned_trades_per_iter": 36,
+      "p5_profit_usd": 48513.18,
+      "median_profit_usd": 49177.21,
+      "p95_profit_usd": 49800.45,
+      "p5_profit_factor": 6.54,
+      "median_profit_factor": 6.61,
+      "p95_profit_factor": 6.68,
+      "p5_max_dd_usd": 467.39,
+      "median_max_dd_usd": 467.39,
+      "worst_max_dd_usd": 765.93,
+      "profitable_iterations_pct": 100.0
+    },
+    "gap_adverse_sl": {
+      "net_profit_usd": 55424.35,
+      "profit_factor": 7.2,
+      "win_rate_pct": 84.11,
+      "total_trades": 428,
+      "max_drawdown_usd": 487.39,
+      "worst_daily_loss_usd": 487.39,
+      "dll_violated": false,
+      "mtdd_violated": false
+    }
+  },
+  "scorecard_verdict": {
+    "score": 100.0,
+    "raw_points_earned": 85.0,
+    "max_possible_points": 85.0,
+    "status": "PASS",
+    "verdict": "🟢 PASS - CERTIFICADO PARA PRUEBA DE FONDEO",
+    "hard_gates_passed": true,
+    "hard_gates_violations": [],
+    "pillar_breakdown": {
+      "monte_carlo_points": {
+        "earned": 30.0,
+        "max": 30.0
+      },
+      "parameter_stability_points": {
+        "earned": 10.0,
+        "max": 10.0
+      },
+      "walk_forward_points": {
+        "earned": 25.0,
+        "max": 25.0
+      },
+      "what_if_points": {
+        "earned": 20.0,
+        "max": 20.0
+      }
+    }
+  }
+}

@@ -66,9 +66,9 @@ def main():
     parser = argparse.ArgumentParser(
         description="Backtest Cuantitativo de Estrategia F4: Cointegración ES/NQ y Difusión Ornstein-Uhlenbeck"
     )
-    # Rutas de datos (prioriza 3 años)
-    def_nq = "data/raw/CME_MINI_NQ_5m_3y.parquet" if Path("data/raw/CME_MINI_NQ_5m_3y.parquet").exists() else "data/raw/CME_MINI_NQ_5m_bars5000.parquet"
-    def_es = "data/raw/CME_MINI_ES_5m_3y.parquet" if Path("data/raw/CME_MINI_ES_5m_3y.parquet").exists() else "data/raw/CME_MINI_ES_5m_bars5000.parquet"
+    # Rutas de datos (prioriza series reales CME 2021-2023)
+    def_nq = "data/raw/CME_MINI_NQ_2021_2023_5m.parquet" if Path("data/raw/CME_MINI_NQ_2021_2023_5m.parquet").exists() else "data/raw/CME_MINI_NQ_5m_3y.parquet"
+    def_es = "data/raw/CME_MINI_ES_2021_2023_5m.parquet" if Path("data/raw/CME_MINI_ES_2021_2023_5m.parquet").exists() else "data/raw/CME_MINI_ES_5m_3y.parquet"
     parser.add_argument(
         "--data-nq", type=str, default=def_nq,
         help="Ruta al archivo Parquet o CSV con velas de 5m de NQ/MNQ"

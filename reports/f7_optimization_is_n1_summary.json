@@ -1,0 +1,23 @@
+{
+    "total_trades": 95,
+    "win_rate": 33.68,
+    "profit_factor": 0.62,
+    "net_profit": -1137.41,
+    "total_return_pct": -2.27,
+    "final_equity": 48862.59,
+    "peak_equity": 50457.86,
+    "max_drawdown_usd": 1605.47,
+    "max_drawdown_pct": 3.18,
+    "sharpe_ratio": -5.18,
+    "standard_trades": 18,
+    "micro_trades": 77,
+    "exit_reasons": {
+        "TP": 32,
+        "SL": 62,
+        "TIME": 1
+    },
+    "is_halted": false,
+    "halt_reason": null,
+    "symbol": "ES",
+    "timestamp": "2026-11-05T17:28:28.537456"
+}

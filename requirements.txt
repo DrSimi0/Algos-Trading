@@ -17,4 +17,5 @@ git+https://github.com/rongardF/tvdatafeed.git
 # Análisis Estadístico y Cointegración
 statsmodels>=0.14.0
 scipy>=1.11.0
+cryptography>=42.0.0
 

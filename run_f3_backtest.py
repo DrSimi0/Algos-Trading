@@ -35,12 +35,15 @@ def load_dataset(symbol: str, data_path: str = None) -> pd.DataFrame:
     if data_path:
         path = Path(data_path)
     else:
-        # Buscar en data/raw
+        # Buscar en data/raw (priorizando datos consolidados 2021-2023 CME Globex)
         candidates = [
+            Path(f"data/raw/CME_MINI_{sym}_2021_2023_5m.parquet"),
+            Path(f"data/raw/CME_MINI_{sym}_2021_2023_5m.csv"),
             Path(f"data/raw/CME_MINI_{sym}_5m_3y.parquet"),
             Path(f"data/raw/CME_MINI_{sym}_5m_3y.csv"),
             Path(f"data/raw/CME_MINI_{sym}_5m_bars5000.csv"),
             Path(f"data/raw/CME_MINI_{sym}_5m_bars5000.parquet"),
+            Path(f"data/raw/CME_MINI_ES_2021_2023_5m.parquet") if "ES" in sym else Path(f"data/raw/CME_MINI_NQ_2021_2023_5m.parquet"),
             Path(f"data/raw/CME_MINI_ES_5m_3y.parquet") if "ES" in sym else Path(f"data/raw/CME_MINI_NQ_5m_3y.parquet"),
             Path(f"data/raw/CME_MINI_ES_5m_bars5000.csv") if "ES" in sym else Path(f"data/raw/CME_MINI_NQ_5m_bars5000.csv")
         ]
@@ -150,8 +153,8 @@ def main():
                         help="Hora de anclaje de la sesión regular (HH:MM)")
     parser.add_argument("--print-trades", action="store_true",
                         help="Imprimir tabla detallada de operaciones ejecutadas")
-    parser.add_argument("--output-csv", type=str, default=None,
-                        help="Ruta para exportar el log de operaciones a CSV")
+    parser.add_argument("--output-csv", type=str, default="reports/anchored_vwap_trades.csv",
+                        help="Ruta para exportar el log de operaciones a CSV (por defecto: reports/anchored_vwap_trades.csv)")
     add_data_split_args(parser)
 
     args = parser.parse_args()

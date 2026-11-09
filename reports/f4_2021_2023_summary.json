@@ -1,0 +1,57 @@
+{
+  "period": "2021-2023",
+  "bars": 56298,
+  "prop_evaluation": {
+    "status": "PASS",
+    "reason": "Profit Target Achieved",
+    "target_achieved_date": "2023-01-09 00:00:00-05:00",
+    "final_balance": 97499.3,
+    "net_profit": 47499.3,
+    "peak_equity": 97499.3,
+    "final_floor": 50000.0,
+    "total_days_evaluated": 717,
+    "early_stopping_disabled": true
+  },
+  "metrics": {
+    "Total Trades": 375,
+    "Winning Trades": 312,
+    "Losing Trades": 63,
+    "Win Rate (%)": 83.2,
+    "Gross Profit ($)": 57291.53,
+    "Gross Loss ($)": 9792.23,
+    "Profit Factor": 5.85,
+    "Net Profit ($)": 47499.3,
+    "Total Return (%)": 95.0,
+    "Annualized Return (%)": 33.39,
+    "Max Drawdown ($)": 1104.57,
+    "Sharpe Ratio (Daily 252d)": 6.24,
+    "Sharpe Ratio (Per Trade)": 0.7981,
+    "Sortino Ratio (Daily 252d)": 6.97,
+    "Exit Reasons": {
+      "TAKE_PROFIT": 273,
+      "EOD_FLAT": 66,
+      "STOP_LOSS": 24,
+      "TIME_DECAY": 12
+    }
+  },
+  "yearly_breakdown": {
+    "2021": {
+      "trades": 0,
+      "net_pnl": 0.0,
+      "win_rate": 0.0,
+      "profit_factor": 999.0
+    },
+    "2022": {
+      "trades": 0,
+      "net_pnl": 0.0,
+      "win_rate": 0.0,
+      "profit_factor": 999.0
+    },
+    "2023": {
+      "trades": 375,
+      "net_pnl": 47499.3,
+      "win_rate": 83.2,
+      "profit_factor": 5.85
+    }
+  }
+}

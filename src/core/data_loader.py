@@ -132,12 +132,15 @@ class DataLoader:
         if df.index.tz is not None:
             df.index = df.index.tz_localize(None)
 
-        if use_cache:
-            try:
-                df.to_parquet(cache_file)
-            except Exception:
-                pass
+        # Guardar siempre los datos frescos descargados en caché (parquet y csv)
+        try:
+            df.to_parquet(cache_file)
+        except Exception:
+            pass
+        try:
             df.to_csv(csv_file)
+        except Exception:
+            pass
 
         return df
 
@@ -168,15 +171,23 @@ class DataLoader:
         if use_cache:
             if cache_file.exists():
                 return pd.read_parquet(cache_file)
-            # Buscar si existe en caché de TradingView
-            tv_parquet = self.cache_dir / f"CME_MINI_{safe_sym}_{interval}_bars5000.parquet"
-            tv_csv = self.cache_dir / f"CME_MINI_{safe_sym}_{interval}_bars5000.csv"
-            if tv_parquet.exists():
-                df_tv = pd.read_parquet(tv_parquet)
-                return self._filter_by_dates(df_tv, start_date, end_date)
-            elif tv_csv.exists():
-                df_tv = pd.read_csv(tv_csv, index_col=0, parse_dates=True)
-                return self._filter_by_dates(df_tv, start_date, end_date)
+            # Buscar si existe en caché local de TradingView o datasets consolidados
+            candidates = [
+                self.cache_dir / f"CME_MINI_{safe_sym}_{interval}_bars5000.parquet",
+                self.cache_dir / f"CME_MINI_{safe_sym}_{interval}_bars5000.csv",
+                self.cache_dir / f"CME_MINI_{safe_sym}_2021_2023_{interval}.parquet",
+                self.cache_dir / f"CME_MINI_{safe_sym}_2021_2023_{interval}.csv",
+                self.cache_dir / f"CME_MINI_{safe_sym}_2026_{interval}.parquet",
+            ]
+            for cand in candidates:
+                if cand.exists():
+                    try:
+                        df_cand = pd.read_parquet(cand) if cand.suffix == ".parquet" else pd.read_csv(cand, index_col=0, parse_dates=True)
+                        filtered = self._filter_by_dates(df_cand, start_date, end_date)
+                        if not filtered.empty:
+                            return filtered
+                    except Exception:
+                        continue
 
         # Resolver ticker de futuros para Yahoo Finance si aplica (ej. ES -> ES=F)
         yf_symbol = symbol

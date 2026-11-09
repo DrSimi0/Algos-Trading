@@ -25,6 +25,10 @@ from src.strategies.order_flow_imbalance import (
     OFIPropAccount,
     generate_synthetic_lob_events,
 )
+from src.strategies.f5_optimizacion_is_n1 import (
+    F5OptimizacionISN1Strategy,
+    F5OptimizacionISN1Backtester,
+)
 
 
 def print_banner(text: str, width: int = 78):
@@ -73,6 +77,10 @@ def main():
                         help="Ruta para exportar el log de operaciones en CSV")
     parser.add_argument("--export-summary", type=str, default="reports/ofi_summary.json",
                         help="Ruta para exportar el resumen de métricas en JSON")
+    parser.add_argument("--f5-opt", "--optimized", dest="optimized", action="store_true",
+                        help="Ejecutar la versión alternativa optimizada: F5-Optimizacion -IS- N1")
+    parser.add_argument("--hurdle-mult", type=float, default=1.50,
+                        help="Multiplicador kappa sobre costo transaccional esperado para F5-Opt (def: 1.50)")
     add_data_split_args(parser)
 
     args = parser.parse_args()
@@ -159,19 +167,36 @@ def main():
                 feed_type = "Feed Real CME Globex MDP 3.0 (L1)"
 
     # 2. Configurar Estrategia y Cuenta Prop Trading
-    print(f"[2/3] Configurando Estrategia F5 y Cuenta Prop Trading (${args.capital:,.2f})...")
-    strategy = OrderFlowImbalanceStrategy(
-        params={
-            "symbol": args.symbol,
-            "std_symbol": std_sym,
-            "micro_symbol": micro_sym,
-            "window_w": args.window_w,
-            "theta_enter": args.theta_enter,
-            "theta_exhaust": args.theta_exhaust,
-            "theta_reversal": args.theta_reversal,
-            "h_max": args.h_max,
-        }
-    )
+    if args.optimized:
+        print(f"[2/3] Configurando Versión Alterna F5-Optimizacion -IS- N1 (Hurdle kappa={args.hurdle_mult:.2f}) y Cuenta Prop (${args.capital:,.2f})...")
+        strategy = F5OptimizacionISN1Strategy(
+            params={
+                "symbol": args.symbol,
+                "std_symbol": std_sym,
+                "micro_symbol": micro_sym,
+                "window_w": args.window_w,
+                "theta_enter": args.theta_enter,
+                "theta_exhaust": args.theta_exhaust,
+                "theta_reversal": args.theta_reversal,
+                "hurdle_multiplier": args.hurdle_mult,
+                "hurdle_enabled": True,
+                "h_max": args.h_max,
+            }
+        )
+    else:
+        print(f"[2/3] Configurando Estrategia F5 Base y Cuenta Prop Trading (${args.capital:,.2f})...")
+        strategy = OrderFlowImbalanceStrategy(
+            params={
+                "symbol": args.symbol,
+                "std_symbol": std_sym,
+                "micro_symbol": micro_sym,
+                "window_w": args.window_w,
+                "theta_enter": args.theta_enter,
+                "theta_exhaust": args.theta_exhaust,
+                "theta_reversal": args.theta_reversal,
+                "h_max": args.h_max,
+            }
+        )
 
     account = OFIPropAccount(
         initial_capital=args.capital,
@@ -185,12 +210,16 @@ def main():
 
     # 3. Ejecutar Backtester
     print("[3/3] Ejecutando simulación microestructural y auditoría de riesgo...")
-    backtester = OFIBacktester(strategy=strategy, account=account)
+    if args.optimized:
+        backtester = F5OptimizacionISN1Backtester(strategy=strategy, account=account)
+    else:
+        backtester = OFIBacktester(strategy=strategy, account=account)
     report = backtester.run(df)
     report["data_feed_type"] = feed_type
 
     # 4. Mostrar Resultados Formateados
-    print_banner("ESTRATEGIA F5: ORDER FLOW IMBALANCE DE NIVEL 1 (CONT, KUKANOV & STOIKOV 2014)")
+    banner_title = "ESTRATEGIA F5-OPTIMIZACION -IS- N1: OFI ROBUSTO (IQR) + ECONOMIC HURDLE" if args.optimized else "ESTRATEGIA F5: ORDER FLOW IMBALANCE DE NIVEL 1 (CONT, KUKANOV & STOIKOV 2014)"
+    print_banner(banner_title)
     print_table_row("Tipo de Feed de Datos", feed_type)
     print_table_row("Activo Principal / Micro", f"{std_sym} / {micro_sym}")
     print_table_row("Capital Inicial", f"${report['initial_capital']:,.2f}")

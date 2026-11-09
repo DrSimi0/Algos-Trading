@@ -1,0 +1,70 @@
+{
+  "metrics_k2340": {
+    "Total Trades": 16,
+    "Winning Trades": 6,
+    "Losing Trades": 10,
+    "Win Rate (%)": 37.5,
+    "Gross Profit ($)": 469.96,
+    "Gross Loss ($)": 1512.3,
+    "Profit Factor": 0.31,
+    "Net Profit ($)": -1042.34,
+    "Total Return (%)": -2.08,
+    "Annualized Return (%)": -9.91,
+    "Max Drawdown ($)": 774.9,
+    "Sharpe Ratio (Daily 252d)": -3.37,
+    "Sharpe Ratio (Per Trade)": -0.4182,
+    "Sortino Ratio (Daily 252d)": -2.13,
+    "Exit Reasons": {
+      "STOP_LOSS": 7,
+      "TAKE_PROFIT": 6,
+      "TIME_DECAY": 2,
+      "EOD_FLAT": 1
+    }
+  },
+  "metrics_k390": {
+    "Total Trades": 14,
+    "Winning Trades": 4,
+    "Losing Trades": 10,
+    "Win Rate (%)": 28.57,
+    "Gross Profit ($)": 167.17,
+    "Gross Loss ($)": 1164.76,
+    "Profit Factor": 0.14,
+    "Net Profit ($)": -997.59,
+    "Total Return (%)": -2.0,
+    "Annualized Return (%)": -9.49,
+    "Max Drawdown ($)": 785.15,
+    "Sharpe Ratio (Daily 252d)": -3.98,
+    "Sharpe Ratio (Per Trade)": -0.6551,
+    "Sortino Ratio (Daily 252d)": -1.98,
+    "Exit Reasons": {
+      "STOP_LOSS": 5,
+      "TIME_DECAY": 5,
+      "TAKE_PROFIT": 2,
+      "EOD_FLAT": 2
+    }
+  },
+  "mc_2026_isolated": {
+    "n_simulations": 2500,
+    "n_trades": 14,
+    "median_net_pnl": -990.9500000000007,
+    "p5_pnl": -1657.7194999999974,
+    "p95_pnl": -371.8685000000023,
+    "median_max_dd": 1029.5200000000004,
+    "p95_max_dd": 1671.8760000000023,
+    "cvar_95_dd": 1830.4792000000002,
+    "prob_ruin_pct": 0.44,
+    "prob_target_pct": 0.0
+  },
+  "mc_projected_pool": {
+    "n_simulations": 2500,
+    "n_trades": 472,
+    "median_net_pnl": 22244.08999999999,
+    "p5_pnl": 15085.501999999995,
+    "p95_pnl": 29193.851999999977,
+    "median_max_dd": 1780.3499999999985,
+    "p95_max_dd": 2970.8564999999962,
+    "cvar_95_dd": 3468.4600800000017,
+    "prob_ruin_pct": 33.92,
+    "prob_target_pct": 100.0
+  }
+}

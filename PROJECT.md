@@ -1,49 +1,73 @@
-# Project: Especificación Matemática Formal de Estrategias Cuantitativas CME (ES & NQ) para Prop Trading
+# Project: Archivo de Datos Sintéticos y Re-Calibración de F4 sobre Datos Reales CME Globex
 
 ## Architecture
-- **Domain**: Modelado matemático analítico, microestructura de mercado, procesos estocásticos y control de riesgo estricto para cuentas fondeadas (Prop Trading).
-- **Target Instruments**: Futuros CME E-mini S&P 500 (`ES`), Micro E-mini S&P 500 (`MES`), CME E-mini Nasdaq 100 (`NQ`), Micro E-mini Nasdaq 100 (`MNQ`).
-- **Target Deliverables**: 9 documentos modulares, individuales, autocontenidos e independientes en `reports/estrategias_matematicas/`.
-- **Integrity & Constraints**:
-  - Cero código de programación (Python, C++, etc.), scripts o pseudocódigo ejecutable.
-  - Cero indicadores minoristas tradicionales descartados (sin SMA ni RSI estándar).
-  - Pura formulación analítica, declarativa y formal en LaTeX con definiciones unívocas de variables, dominios y unidades.
-  - Ecuaciones cerradas de generación de señales, reglas analíticas de salida (take profit, stop loss, time-decay) y control de riesgo prop trading (Daily Loss Limit, Max Trailing Drawdown, escalado por volatilidad).
-  - Rúbrica de verificación analítica objetiva incorporada en cada archivo.
+- **Dominio**: Archivo definitivo del generador sintético ad-hoc, persistencia de reglas institucionales anti-contaminación, implementación en F4 de piso de volatilidad ($\sigma_{floor} \ge 0.001$) y filtro de desacoplamiento sectorial (correlación rodante 30 días XLK/SPY $\ge 0.85$), priorización de estrategias reales como F3-N3 (reversión intradía a VWAP), y unificación de pipelines de calibración, backtesting y Monte Carlo exclusivamente sobre datos históricos reales de CME Globex (`data/raw/CME_MINI_ES_2021_2023_5m.parquet` y `CME_MINI_NQ_2021_2023_5m.parquet`, 56,298 barras limpias).
+- **Instrumentos CME**: Futuros E-mini y Micro E-mini (ES, MES, NQ, MNQ) y ETFs sectoriales (XLK, SPY).
+- **Entregables Principales**:
+  1. `scripts/archive/generate_synthetic_futures_3y.py`: Archivo histórico del generador sintético fuera de la ruta activa.
+  2. `docs/REGLAS_BACKTESTING_Y_ANTI_CONTAMINACION.md`: Regla 6 de prohibición estricta de calibración sobre datos sintéticos/simulados y uso exclusivo de CME real In-Sample.
+  3. `src/strategies/f4_optimizacion_is_n1.py`, `src/strategies/f4_optimizacion_is_n2.py`, `src/strategies/cointegration_ou_base.py`: piso de volatilidad $\sigma_{floor} \ge 0.001$ en $\sigma_{eq}$ y oscilador S-score.
+  4. Módulo de filtro sectorial XLK/SPY 30 días desfasado ($shift(1)$ anti-lookahead) con bloqueo de órdenes cuando $\rho < 0.85$.
+  5. `run_f4_optimizacion_is_n1_backtest.py`, `run_f4_optimizacion_is_n2_backtest.py`, `run_f3_optimization_n3_backtest.py`: rutas por defecto a series reales `_2021_2023_5m.parquet`.
+  6. `src/core/data_split.py`: soporte para universo In-Sample completo 2021-2023.
+  7. `run_monte_carlo.py` y `run_portfolio_backtest.py`: integración y priorización de F3-N3 como estrategia base (~65% riesgo) y F4 como overlay condicional (~35% riesgo).
+  8. Suites de pruebas unitarias y de integración actualizadas en `tests/`.
+- **Restricciones Vinculantes**:
+  - Prohibición terminante de calibrar sobre series sintéticas o simuladas ad-hoc.
+  - Confinamiento estricto a In-Sample (2021-2023). Queda terminantemente PROHIBIDO consultar, leer, ejecutar o evaluar datos OOS (2024) o Holdout ciego (2025).
+  - Veto binario del Forensic Auditor: veredicto obligatorio CLEAN.
+  - Plausibilidad estadística estricta: Sharpe anualizado en rango real (1.20 a 3.50), Profit Factor (1.30 a 2.20), rechazando Sharpe > 8.0 o PF > 4.0 como anomalía/sobreajuste.
 
 ## Feature Inventory
 | # | Feature | Description | Milestone | Source |
 |---|---------|-------------|-----------|--------|
-| F1 | Market Intraday Momentum & MOC Seasonality | Gao et al. (2018); Bogousslavsky (2021). Retorno matutino prediciendo cierre, TWAP/VWAP institucional y balance MOC. | M2 | Survey Explorer 1 |
-| F2 | Filtered Quantitative ORB | Crabel (1990); Zarattini et al. (2024); Fetna (2024). ORB 15-min con compresión previa NR4/ID, amortiguador Stretch y filtro RVOL >= 1.8. | M2 | Survey Explorer 1 |
-| F3 | Anchored VWAP & Rotational Value Area Reversion | Madhavan (2002); Gatheral (2010); Steidlmayer (1986). Bandas $\pm 2\sigma$ ancladas, Auction Market Theory, filtro de régimen ADX < 25. | M2 | Survey Explorer 1 |
-| F4 | Cointegración ES vs NQ / Ornstein-Uhlenbeck | Avellaneda & Lee (2010); Hasbrouck (2003). Arbitraje estadístico entre NQ y ES, difusión O-U, S-score, cobertura Dollar-Beta Neutral. | M3 | Survey Explorer 2 |
-| F5 | Order Flow Imbalance Cont et al. | Cont, Kukanov & Stoikov (2014). Nivel 1 LOB imbalance, función de flujo discreto $e_n$, Z-score rodante, absorción del libro. | M3 | Survey Explorer 2 |
-| F6 | Multi-Level OFI | Xu, Gould & Howison (2019). Imbalance multi-nivel, decaimiento espacial de potencias, descomposición en componentes principales (PCA), índice $\Phi_{coherence}$. | M3 | Survey Explorer 2 |
-| F7 | Meta-Labeling & Triple Barrier | López de Prado (2018). Desacoplamiento de señal primaria y meta-modelo probabilístico, dimensionamiento continuo bet sizing, barreras dinámicas. | M4 | Survey Explorer 3 |
-| F8 | Modelos Econométricos HAR-RV-J | Corsi (2009); Andersen et al. (2007); Moreira & Muir (2017). Descomposición continua y de saltos (Bipower Variation), Log-HAR-RV-J, dimensionamiento por volatilidad inversa. | M4 | Survey Explorer 3 |
-| F9 | Anomalías Temporales & VRP | Bollerslev et al. (2009); Boyarchenko et al. (2023); Kurov et al. (2019). VRP Z-score, TSR, deriva nocturna condicional, deriva pre-macro con salida $T-3$ min. | M4 | Survey Explorer 3 |
-| F10 | E2E Automated Verification Infrastructure | Test suite automatizado en `tests/test_math_strategies_verification.py` que audita los 9 documentos contra código, SMA/RSI, completitud de secciones y consistencia formal. | M1 | Test Track |
+| F1 | Synthetic Script Archiving | Traslado de `scripts/generate_synthetic_futures_3y.py` a `scripts/archive/` y limpieza de referencias activas en el repositorio. | M1 | Survey Explorer 1 |
+| F2 | Institutional Rules Persistence | Registro formal de la Regla 6 (prohibición de calibrar con datos sintéticos y exclusividad de CME real) en documentación y reglas del proyecto. | M1 | Survey Explorer 1 |
+| F3 | Z-Score Volatility Floor | Implementación de $\sigma_{floor} \ge 0.001$ sobre $\sigma_{eq}$ en el estimador OU, cálculo contemporáneo y congelado del S-score y stop loss de F4. | M2 | Survey Explorer 2 |
+| F4 | Sector Decoupling Filter | Filtro de correlación rodante de 30 días XLK/SPY con desfase no anticipativo de 1 día ($shift(1)$) bloqueando nuevas entradas si $\rho < 0.85$. | M2 | Survey Explorer 2 |
+| F5 | CME Globex Real Data Unification | Configuración de runners y pipelines de F4 y F3 para consumir exclusivamente `data/raw/CME_MINI_ES_2021_2023_5m.parquet` y contraparte NQ. | M3 | Survey Explorer 1 |
+| F6 | Data Split IS 2021-2023 Support | Ajuste en `src/core/data_split.py` para reconocer el trienio 2021-2023 como periodo In-Sample en datasets históricos consolidados. | M3 | Survey Explorer 3 |
+| F7 | Real Strategy Prioritization (F3-N3) | Priorización de F3-N3 como estrategia base (~65% margen) y F4 como overlay condicional (~35% margen) en runners de portafolio y Monte Carlo. | M3 | Survey Explorer 3 |
+| F8 | Confinement & Plausibility Audit | Auditoría de air-gap criptográfico y verificación de métricas estadísticamente verosímiles en Monte Carlo (TMDD $\le \$3,000$, DLL $\le \$1,500$, Ruina $< 10\%$). | M4 | Survey Explorer 3 |
+| F9 | E2E Verification Gate | Ejecución y certificación integral por Reviewers (APPROVE), Challengers (APPROVE) y Forensic Auditor (CLEAN). | M4 | All Explorers |
+| F10 | Synthesis & Human Reporting | Elaboración de reporte de cierre estructurado en español para el usuario y Sentinel. | M5 | Orchestrator |
 
 ## Milestones
 | # | Name | Scope | Dependencies | Status |
 |---|------|-------|-------------|--------|
-| M1 | E2E Test Suite Creation & Verification Infra | Diseñar suite de tests automatizada de 4 niveles en `tests/test_math_strategies_verification.py` y publicar `TEST_READY.md`. | none | DONE |
-| M2 | Mathematical Documents Authoring: F1, F2, F3 | Generar `F1_market_intraday_momentum.md`, `F2_filtered_orb.md`, `F3_anchored_vwap_value_area.md` en `reports/estrategias_matematicas/`. | M1 | DONE |
-| M3 | Mathematical Documents Authoring: F4, F5, F6 | Generar `F4_cointegracion_es_nq_ornstein_uhlenbeck.md`, `F5_order_flow_imbalance_cont.md`, `F6_multi_level_ofi.md` en `reports/estrategias_matematicas/`. | M1 | DONE |
-| M4 | Mathematical Documents Authoring: F7, F8, F9 | Generar `F7_meta_labeling_triple_barrier.md`, `F8_modelos_econometricos_har_rv_j.md`, `F9_anomalias_temporales_vrp.md` en `reports/estrategias_matematicas/`. | M1 | DONE |
-| M5 | Final Milestone: Review, Challenge & Forensic Audit Gate | Pasar 100% de la suite de tests E2E, revisión independiente por pares, stress test adversarial y veredicto CLEAN del Auditor Forense. | M2, M3, M4 | DONE |
+| M1 | Synthetic Archiving & Policy Persistence | Archivar generador sintético a `scripts/archive/`, actualizar referencias en código y documentar Regla 6. | none | **DONE** |
+| M2 | F4 Volatility Floor & Sector Filter | Implementar $\sigma_{floor} \ge 0.001$ y filtro rodante XLK/SPY $\ge 0.85$ en F4 con tests unitarios. | none | **DONE** |
+| M3 | CME Data Unification & Strategy Prioritization | Unificar runners en CME real 2021-2023, ajustar `data_split.py`, y conectar F3-N3 en portafolio y Monte Carlo. | M1, M2 | **DONE** |
+| M4 | End-to-End Verification Gate | Ejecutar backtests IS, Monte Carlo, suites de tests, revisión de código, pruebas de estrés y auditoría forense CLEAN. | M3 | **DONE** |
+| M5 | Synthesis & Human Reporting | Generar reporte ejecutivo consolidado y comunicar resultados al usuario y Sentinel. | M4 | **DONE** |
+
+## Interface Contracts
+### F4 Strategy ↔ Sector Filter
+- Función `compute_sector_correlation_series(df_xlk, df_spy, window=30)`:
+  * Entradas: `df_xlk` (DataFrame diario OHLCV), `df_spy` (DataFrame diario OHLCV), `window: int = 30`.
+  * Retorno: `pd.Series` con índice `datetime.date` y valores float de correlación de retornos logarítmicos desfasados con `shift(1)`.
+- En `F4OptimizationISN1Strategy.generate_signals` y `F4OptimizationISN2Strategy.generate_signals`:
+  * Parámetros: `"min_sector_corr": 0.85`, `"sector_corr_window": 30`, `"sigma_floor": 0.001`.
+  * Condición de veto: `sector_corr_val < min_sector_corr` impide nuevas órdenes pendientes pero permite cerrar posiciones activas.
+- En `fit_ou_process_intraday`, `calculate_s_score`, `calculate_frozen_s_score`:
+  * `sigma_eq_eff = max(sigma_eq, sigma_floor)`.
+
+### Runners ↔ Datasets
+- Entradas estándar por defecto:
+  * ES: `data/raw/CME_MINI_ES_2021_2023_5m.parquet`
+  * NQ: `data/raw/CME_MINI_NQ_2021_2023_5m.parquet`
+  * XLK: `data/raw/XLK_1d_2021-01-01_2023-12-31.parquet`
+  * SPY: `data/raw/SPY_1d_2021-01-01_2023-12-31.parquet`
 
 ## Code Layout
-- `reports/estrategias_matematicas/F1_market_intraday_momentum.md`
-- `reports/estrategias_matematicas/F2_filtered_orb.md`
-- `reports/estrategias_matematicas/F3_anchored_vwap_value_area.md`
-- `reports/estrategias_matematicas/F4_cointegracion_es_nq_ornstein_uhlenbeck.md`
-- `reports/estrategias_matematicas/F5_order_flow_imbalance_cont.md`
-- `reports/estrategias_matematicas/F6_multi_level_ofi.md`
-- `reports/estrategias_matematicas/F7_meta_labeling_triple_barrier.md`
-- `reports/estrategias_matematicas/F8_modelos_econometricos_har_rv_j.md`
-- `reports/estrategias_matematicas/F9_anomalias_temporales_vrp.md`
-- `tests/test_math_strategies_verification.py`: Suite de verificación automatizada.
-- `TEST_READY.md`: Manifiesto de ejecución de pruebas.
-- `TEST_INFRA.md`: Especificación metodológica de pruebas.
+- `scripts/archive/generate_synthetic_futures_3y.py`: Generador archivado.
+- `docs/REGLAS_BACKTESTING_Y_ANTI_CONTAMINACION.md`: Reglas del sistema y anti-contaminación.
+- `src/strategies/f4_optimizacion_is_n1.py` / `src/strategies/f4_optimizacion_is_n2.py` / `src/strategies/f4_optimizacion_is_n3.py`: Estrategias F4 con sigma floor, filtro sectorial y cestas coprimas.
+- `src/strategies/cointegration_ou_base.py`: Modelo base OU con sigma floor.
+- `src/strategies/mean_reversion/f3_optimization_is_n3.py`: Estrategia prioritaria F3-N3.
+- `src/core/data_split.py`: Gestor de partición In-Sample / Vault.
+- `run_f4_optimizacion_is_n1_backtest.py` / `run_f4_optimizacion_is_n2_backtest.py` / `run_f4_optimizacion_is_n3_backtest.py`: Runners F4 en CME real.
+- `run_f3_optimization_n3_backtest.py`: Runner F3-N3 en CME real.
+- `run_monte_carlo.py` / `run_portfolio_backtest.py`: Simuladores estocásticos y de portafolio.
+- `tests/test_f4_optimizacion_is_n1.py` / `tests/test_f4_optimizacion_is_n2.py` / `tests/test_f4_optimizacion_is_n3.py`: Suites de pruebas de F4.
+- `tests/test_f3_optimization_is_n2.py` / `tests/test_f3_optimization_is_n3.py` / `tests/test_monte_carlo_and_portfolio.py`: Suites de pruebas de F3 y portafolio.

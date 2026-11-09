@@ -1,0 +1,1040 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>F4 Cointegration & Prop Trading Analyzer - SQX Plugin</title>
+    <!-- Chart.js CDN for interactive charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #12141a;
+            --bg-secondary: #1a1e27;
+            --bg-card: #212634;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --accent: #388bfd;
+            --accent-hover: #58a6ff;
+            --border-color: #30363d;
+            --pass-color: #2ea043;
+            --pass-bg: rgba(46, 160, 67, 0.15);
+            --fail-color: #f85149;
+            --fail-bg: rgba(248, 81, 73, 0.15);
+            --warning-color: #d29922;
+            --warning-bg: rgba(210, 153, 34, 0.15);
+            --chart-grid: rgba(255, 255, 255, 0.08);
+        }
+
+        body.light-theme {
+            --bg-primary: #f6f8fa;
+            --bg-secondary: #ffffff;
+            --bg-card: #ffffff;
+            --text-primary: #1f2328;
+            --text-secondary: #656d76;
+            --accent: #0969da;
+            --accent-hover: #218bff;
+            --border-color: #d0d7de;
+            --pass-color: #1a7f37;
+            --pass-bg: rgba(26, 127, 55, 0.15);
+            --fail-color: #cf222e;
+            --fail-bg: rgba(207, 34, 46, 0.15);
+            --warning-color: #9a6700;
+            --warning-bg: rgba(154, 103, 0, 0.15);
+            --chart-grid: rgba(0, 0, 0, 0.08);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            padding: 16px;
+            font-size: 13px;
+            line-height: 1.5;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        /* Banner de cabecera */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 18px;
+            margin-bottom: 16px;
+        }
+
+        .header-title h1 {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .header-title p {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .header-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .account-badge {
+            background: var(--accent);
+            color: white;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 4px 10px;
+            border-radius: 12px;
+        }
+
+        .param-group {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .param-group select, .param-group input {
+            background: var(--bg-secondary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 3px 6px;
+            font-size: 11px;
+        }
+
+        /* Banner Demo Mode */
+        .demo-alert {
+            display: none;
+            background: var(--warning-bg);
+            border: 1px solid var(--warning-color);
+            color: var(--warning-color);
+            padding: 8px 14px;
+            border-radius: 6px;
+            margin-bottom: 14px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Grid de KPIs de Fondeo */
+        .prop-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .kpi-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .kpi-card.pass {
+            border-left: 4px solid var(--pass-color);
+        }
+
+        .kpi-card.fail {
+            border-left: 4px solid var(--fail-color);
+        }
+
+        .kpi-card.warning {
+            border-left: 4px solid var(--warning-color);
+        }
+
+        .kpi-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .kpi-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            color: var(--text-secondary);
+            letter-spacing: 0.5px;
+        }
+
+        .kpi-status-badge {
+            font-size: 10px;
+            font-weight: 700;
+            padding: 2px 6px;
+            border-radius: 4px;
+            text-transform: uppercase;
+        }
+
+        .status-pass {
+            background: var(--pass-bg);
+            color: var(--pass-color);
+        }
+
+        .status-fail {
+            background: var(--fail-bg);
+            color: var(--fail-color);
+        }
+
+        .status-warn {
+            background: var(--warning-bg);
+            color: var(--warning-color);
+        }
+
+        .kpi-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .kpi-subtext {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* Paneles de Contenido */
+        .layout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+
+        @media (max-width: 1024px) {
+            .layout-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .panel-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+
+        .chart-container {
+            position: relative;
+            flex: 1;
+            min-height: 240px;
+            width: 100%;
+        }
+
+        /* Tabla de Auditoría */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        th {
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            text-align: left;
+            padding: 8px 10px;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-primary);
+        }
+
+        tr:hover td {
+            background-color: var(--bg-secondary);
+        }
+
+        .text-green { color: var(--pass-color); font-weight: 600; }
+        .text-red { color: var(--fail-color); font-weight: 600; }
+        .text-neutral { color: var(--text-secondary); }
+
+        /* Tarjeta de Métricas F4 */
+        .metrics-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px dashed var(--border-color);
+            font-size: 12px;
+        }
+
+        .metric-row:last-child {
+            border-bottom: none;
+        }
+
+        .metric-name {
+            color: var(--text-secondary);
+        }
+
+        .metric-val {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* Progress Bar para Target */
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background: var(--bg-secondary);
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 8px;
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: var(--pass-color);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 16px;
+            padding: 8px;
+            font-size: 11px;
+            color: var(--text-secondary);
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Alerta Modo Demo -->
+    <div id="demoAlert" class="demo-alert">
+        ℹ️ <strong>Modo Demostración Activo:</strong> Plugin ejecutándose fuera de StrategyQuant X. Mostrando datos sintéticos simulados de la estrategia F4 (ES vs NQ Cointegración) para previsualización.
+    </div>
+
+    <!-- Header Principal -->
+    <div class="header">
+        <div class="header-title">
+            <h1>📊 F4 Cointegration & Prop Trading Risk Auditor</h1>
+            <p id="strategySubtitle">Estrategia: <span id="strategyNameLabel" style="font-weight:600; color:var(--accent);">Detectando estrategia en SQX...</span> | Databank: <span id="databankLabel">-</span></p>
+        </div>
+        <div class="header-controls">
+            <div class="param-group">
+                <label for="propPreset">Preset Fondeo:</label>
+                <select id="propPreset" onchange="applyPreset()">
+                    <option value="50k" selected>Cuenta $50k (DLL $1.5k, DD $3k, Obj $3k)</option>
+                    <option value="100k">Cuenta $100k (DLL $3k, DD $6k, Obj $6k)</option>
+                    <option value="custom">Personalizado</option>
+                </select>
+            </div>
+            <div class="param-group">
+                <label for="halfLifeInput">$\tau_{OU}$ Ref (barras):</label>
+                <input type="number" id="halfLifeInput" value="12" style="width: 50px;" onchange="recalculateMetrics()">
+            </div>
+        </div>
+    </div>
+
+    <!-- Grid de KPIs de Fondeo (Pass/Fail) -->
+    <div class="prop-grid">
+        <!-- Daily Loss Limit -->
+        <div class="kpi-card" id="cardDLL">
+            <div class="kpi-header">
+                <span class="kpi-label">Límite Pérdida Diaria (DLL)</span>
+                <span class="kpi-status-badge" id="badgeDLL">-</span>
+            </div>
+            <div class="kpi-value" id="valDLL">$0.00</div>
+            <div class="kpi-subtext">Peor Día vs Límite <span id="limitDLLText">-$1,500</span></div>
+        </div>
+
+        <!-- Trailing Max Drawdown -->
+        <div class="kpi-card" id="cardDD">
+            <div class="kpi-header">
+                <span class="kpi-label">Trailing Max Drawdown</span>
+                <span class="kpi-status-badge" id="badgeDD">-</span>
+            </div>
+            <div class="kpi-value" id="valDD">$0.00</div>
+            <div class="kpi-subtext">Max Trailing DD vs Límite <span id="limitDDText">-$3,000</span></div>
+        </div>
+
+        <!-- Profit Target Progress -->
+        <div class="kpi-card" id="cardTarget">
+            <div class="kpi-header">
+                <span class="kpi-label">Profit Target Fondeo</span>
+                <span class="kpi-status-badge" id="badgeTarget">-</span>
+            </div>
+            <div class="kpi-value" id="valTarget">$0.00</div>
+            <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="fillTarget"></div>
+            </div>
+            <div class="kpi-subtext" id="targetSubtext">Progreso hacia $3,000</div>
+        </div>
+
+        <!-- Piso Operativo ($105 USD) -->
+        <div class="kpi-card" id="cardFloor">
+            <div class="kpi-header">
+                <span class="kpi-label">Piso Operativo F4</span>
+                <span class="kpi-status-badge" id="badgeFloor">-</span>
+            </div>
+            <div class="kpi-value" id="valFloor">$0.00</div>
+            <div class="kpi-subtext">Avg Trade Neto vs Mínimo $105 USD</div>
+        </div>
+
+        <!-- Profit Factor & Sharpe -->
+        <div class="kpi-card pass">
+            <div class="kpi-header">
+                <span class="kpi-label">Calidad de Sistema (SQX)</span>
+                <span class="kpi-status-badge status-pass">OK</span>
+            </div>
+            <div class="kpi-value" id="valPF">PF: 0.00</div>
+            <div class="kpi-subtext">Sharpe: <span id="valSharpe">0.00</span> | SQN: <span id="valSQN">0.00</span></div>
+        </div>
+    </div>
+
+    <!-- Layout Grid: Gráficos de Rendimiento y Análisis Ornstein-Uhlenbeck -->
+    <div class="layout-grid">
+        <!-- Gráfico 1: PnL Diario y Barrera DLL -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>📅 PnL por Sesión Diaria & Monitoreo de Daily Loss Limit (DLL)</span>
+                <span id="dailyCountLabel" class="text-neutral" style="font-size:11px;">0 sesiones evaluadas</span>
+            </div>
+            <div class="chart-container">
+                <canvas id="dailyPnlChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Panel Diagnóstico Microestructura F4 -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>⚡ Diagnóstico Microestructura F4 (ES vs NQ)</span>
+            </div>
+            <div class="metrics-list">
+                <div class="metric-row">
+                    <span class="metric-name">Total de Operaciones:</span>
+                    <span class="metric-val" id="metricTotalTrades">0</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-name">Tasa de Acierto (Win Rate):</span>
+                    <span class="metric-val" id="metricWinRate">0.0%</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-name">Simetría Ganancia Long / Short:</span>
+                    <span class="metric-val" id="metricSymmetry">1.00</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-name">Duración Media (Barras):</span>
+                    <span class="metric-val" id="metricAvgBars">0 barras</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-name">Eficiencia vs Vida Media ($\tau_{OU}$):</span>
+                    <span class="metric-val" id="metricHalfLifeRatio">0.0x</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-name">MAE Medio (Adverso):</span>
+                    <span class="metric-val text-red" id="metricAvgMAE">$0.00</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-name">MFE Medio (Favorable):</span>
+                    <span class="metric-val text-green" id="metricAvgMFE">$0.00</span>
+                </div>
+                <div class="metric-row">
+                    <span class="metric-name">Ratio Fricción (Comis+Slip / Ganancia):</span>
+                    <span class="metric-val" id="metricFrictionRatio">0.0%</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Layout Grid: Tipos de Salida & Top Días Críticos -->
+    <div class="layout-grid">
+        <!-- Gráfico 2: Desglose de Tipos de Salida -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>🎯 Desglose de Motivos de Salida (Close Types)</span>
+                <span class="text-neutral" style="font-size:11px;">Convergencia vs Stop Loss vs EOD</span>
+            </div>
+            <div style="display: flex; gap: 16px; align-items: center;">
+                <div style="width: 200px; height: 200px; position: relative;">
+                    <canvas id="exitReasonsChart"></canvas>
+                </div>
+                <div style="flex: 1;" id="exitLegendContainer">
+                    <!-- Leyenda generada dinámicamente -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Tabla: Auditoría Forense de Sesiones de Mayor Estrés -->
+        <div class="panel">
+            <div class="panel-title">
+                <span>⚠️ Peores Sesiones Diarias (Prueba de Estrés DLL)</span>
+            </div>
+            <div style="overflow-x: auto;">
+                <table id="worstDaysTable">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Trades</th>
+                            <th>PnL Neto</th>
+                            <th>Estado DLL</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td colspan="4" class="text-neutral" style="text-align:center;">Esperando datos de órdenes...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        SQX ResultsPlugin v1.0.0 — Optimizado para Estrategia Cuantitativa F4 (ES vs NQ Cointegración) & Proprietary Trading Risk Engine.
+    </div>
+
+    <!-- Lógica de Comunicación PostMessage y Cálculos Cuantitativos -->
+    <script>
+        // Configuración de Presets de Fondeo
+        var propConfig = {
+            preset: '50k',
+            dailyLossLimit: 1500,
+            maxTrailingDD: 3000,
+            profitTarget: 3000,
+            minFloorAvgTrade: 105
+        };
+
+        // Estado Global
+        var globalData = {
+            strategy: {},
+            stats: null,
+            orders: [],
+            xmlSettings: null,
+            theme: 'dark'
+        };
+
+        var dailyChartInstance = null;
+        var exitChartInstance = null;
+
+        // Inicialización y Escucha de Eventos PostMessage
+        window.addEventListener('message', function(event) {
+            if (!event.data || !event.data.type) return;
+
+            switch(event.data.type) {
+                case 'STRATEGY_DATA':
+                    onStrategyData(event.data.data);
+                    break;
+                case 'SET_THEME':
+                    onSetTheme(event.data.theme);
+                    break;
+                case 'STATS_RESPONSE':
+                    onStatsResponse(event.data.data);
+                    break;
+                case 'ORDERS_RESPONSE':
+                    onOrdersResponse(event.data.data);
+                    break;
+                case 'LAST_SETTINGS_XML_RESPONSE':
+                    onLastSettingsXmlResponse(event.data.data);
+                    break;
+            }
+        });
+
+        // 1. Manejo de Selección de Estrategia
+        function onStrategyData(data) {
+            globalData.strategy = data;
+            document.getElementById('strategyNameLabel').textContent = data.strategyName || 'Desconocida';
+            document.getElementById('databankLabel').textContent = data.databankName || '-';
+
+            // Solicitar Estadísticas, Órdenes y XML a SQX
+            requestSQXData();
+        }
+
+        function requestSQXData() {
+            // Solicitar Stats
+            window.parent.postMessage({
+                type: 'GET_STATS',
+                params: {
+                    resultKey: 'Portfolio',
+                    direction: '0',      // 0 = Both
+                    sampleType: '127',   // 127 = Full
+                    plType: '10'         // 10 = Money (USD)
+                }
+            }, '*');
+
+            // Solicitar Órdenes
+            window.parent.postMessage({
+                type: 'GET_ORDERS',
+                params: {
+                    resultKey: 'Portfolio',
+                    direction: '0',
+                    sampleType: '127'
+                }
+            }, '*');
+
+            // Solicitar XML de Configuración (para validar cuarentena IS)
+            window.parent.postMessage({
+                type: 'GET_LAST_SETTINGS_XML',
+                params: {}
+            }, '*');
+        }
+
+        // 2. Manejo de Cambio de Tema (Dark / Light)
+        function onSetTheme(theme) {
+            globalData.theme = theme;
+            if (theme === 'light') {
+                document.body.classList.add('light-theme');
+            } else {
+                document.body.classList.remove('light-theme');
+            }
+            if (dailyChartInstance) updateChartColors();
+        }
+
+        // 3. Manejo de Respuesta de Estadísticas
+        function onStatsResponse(data) {
+            if (!data || !data.stats) return;
+            globalData.stats = data.stats;
+            renderStatsKPIs(data.stats);
+        }
+
+        function renderStatsKPIs(stats) {
+            var pf = parseFloat(stats.ProfitFactor || 0).toFixed(2);
+            var sharpe = parseFloat(stats.SharpeRatio || 0).toFixed(2);
+            var sqn = parseFloat(stats.SQN || 0).toFixed(2);
+            var symmetry = parseFloat(stats.Symmetry || 1).toFixed(2);
+
+            document.getElementById('valPF').textContent = 'PF: ' + pf;
+            document.getElementById('valSharpe').textContent = sharpe;
+            document.getElementById('valSQN').textContent = sqn;
+            document.getElementById('metricSymmetry').textContent = symmetry;
+
+            // Fricción
+            var grossProfit = Math.abs(parseFloat(stats.GrossProfit || 0));
+            var comms = Math.abs(parseFloat(stats.Commission || 0)) + Math.abs(parseFloat(stats.SlippageInMoney || 0));
+            var frictionPct = grossProfit > 0 ? ((comms / grossProfit) * 100).toFixed(1) : '0.0';
+            document.getElementById('metricFrictionRatio').textContent = frictionPct + '%';
+        }
+
+        // 4. Manejo de Respuesta de Órdenes (Núcleo Analítico Cuantitativo)
+        function onOrdersResponse(data) {
+            if (!data || !data.orders) return;
+            globalData.orders = data.orders;
+            recalculateMetrics();
+        }
+
+        // 5. Manejo de Configuración XML
+        function onLastSettingsXmlResponse(data) {
+            globalData.xmlSettings = data;
+        }
+
+        // Función Principal de Procesamiento y Cálculo
+        function recalculateMetrics() {
+            var orders = globalData.orders;
+            if (!orders || orders.length === 0) return;
+
+            var dailyMap = {};
+            var peakBalance = 0;
+            var currentBalance = 0;
+            var maxTrailingDD = 0;
+            var totalProfit = 0;
+            var winningTrades = 0;
+            var totalBars = 0;
+            var totalMAE = 0;
+            var totalMFE = 0;
+            var exitReasons = {};
+
+            orders.forEach(function(order) {
+                var pl = parseFloat(order.ProfitLoss || order.PL || 0);
+                totalProfit += pl;
+                currentBalance += pl;
+
+                if (currentBalance > peakBalance) {
+                    peakBalance = currentBalance;
+                }
+                var currentDD = peakBalance - currentBalance;
+                if (currentDD > maxTrailingDD) {
+                    maxTrailingDD = currentDD;
+                }
+
+                if (pl > 0) winningTrades++;
+
+                // Barras y MAE/MFE
+                totalBars += parseInt(order.BarsInTrade || 0);
+                totalMAE += Math.abs(parseFloat(order.MAE || 0));
+                totalMFE += Math.abs(parseFloat(order.MFE || 0));
+
+                // Close Types
+                var closeTypeStr = getCloseTypeLabel(order.CloseType);
+                exitReasons[closeTypeStr] = (exitReasons[closeTypeStr] || 0) + 1;
+
+                // Agrupación por Día (Fecha ISO YYYY-MM-DD)
+                var closeTime = order.CloseTime ? new Date(order.CloseTime) : new Date(order.OpenTime);
+                var dateKey = closeTime.toISOString().split('T')[0];
+
+                if (!dailyMap[dateKey]) {
+                    dailyMap[dateKey] = { pnl: 0, trades: 0, date: dateKey };
+                }
+                dailyMap[dateKey].pnl += pl;
+                dailyMap[dateKey].trades += 1;
+            });
+
+            var dailyList = Object.values(dailyMap).sort(function(a, b) {
+                return a.date.localeCompare(b.date);
+            });
+
+            // Encontrar el peor día
+            var worstDay = { pnl: 0, date: '-' };
+            dailyList.forEach(function(day) {
+                if (day.pnl < worstDay.pnl) {
+                    worstDay = day;
+                }
+            });
+
+            // 1. Evaluar Daily Loss Limit (DLL)
+            var cardDLL = document.getElementById('cardDLL');
+            var badgeDLL = document.getElementById('badgeDLL');
+            var valDLL = document.getElementById('valDLL');
+            valDLL.textContent = formatUSD(worstDay.pnl);
+
+            if (Math.abs(worstDay.pnl) > propConfig.dailyLossLimit && worstDay.pnl < 0) {
+                cardDLL.className = 'kpi-card fail';
+                badgeDLL.className = 'kpi-status-badge status-fail';
+                badgeDLL.textContent = 'VIOLADO';
+            } else {
+                cardDLL.className = 'kpi-card pass';
+                badgeDLL.className = 'kpi-status-badge status-pass';
+                badgeDLL.textContent = 'CUMPLE';
+            }
+
+            // 2. Evaluar Trailing Max DD
+            var cardDD = document.getElementById('cardDD');
+            var badgeDD = document.getElementById('badgeDD');
+            var valDD = document.getElementById('valDD');
+            valDD.textContent = formatUSD(-maxTrailingDD);
+
+            if (maxTrailingDD > propConfig.maxTrailingDD) {
+                cardDD.className = 'kpi-card fail';
+                badgeDD.className = 'kpi-status-badge status-fail';
+                badgeDD.textContent = 'VIOLADO';
+            } else {
+                cardDD.className = 'kpi-card pass';
+                badgeDD.className = 'kpi-status-badge status-pass';
+                badgeDD.textContent = 'CUMPLE';
+            }
+
+            // 3. Evaluar Profit Target
+            var cardTarget = document.getElementById('cardTarget');
+            var badgeTarget = document.getElementById('badgeTarget');
+            var valTarget = document.getElementById('valTarget');
+            var fillTarget = document.getElementById('fillTarget');
+            valTarget.textContent = formatUSD(totalProfit);
+
+            var pctProgress = Math.min(100, Math.max(0, (totalProfit / propConfig.profitTarget) * 100));
+            fillTarget.style.width = pctProgress + '%';
+
+            if (totalProfit >= propConfig.profitTarget) {
+                cardTarget.className = 'kpi-card pass';
+                badgeTarget.className = 'kpi-status-badge status-pass';
+                badgeTarget.textContent = 'ALCANZADO';
+                fillTarget.style.backgroundColor = 'var(--pass-color)';
+            } else {
+                cardTarget.className = 'kpi-card warning';
+                badgeTarget.className = 'kpi-status-badge status-warn';
+                badgeTarget.textContent = pctProgress.toFixed(0) + '%';
+                fillTarget.style.backgroundColor = 'var(--warning-color)';
+            }
+
+            // 4. Evaluar Piso Operativo F4 ($105 USD)
+            var avgTrade = orders.length > 0 ? (totalProfit / orders.length) : 0;
+            var cardFloor = document.getElementById('cardFloor');
+            var badgeFloor = document.getElementById('badgeFloor');
+            var valFloor = document.getElementById('valFloor');
+            valFloor.textContent = formatUSD(avgTrade);
+
+            if (avgTrade >= propConfig.minFloorAvgTrade) {
+                cardFloor.className = 'kpi-card pass';
+                badgeFloor.className = 'kpi-status-badge status-pass';
+                badgeFloor.textContent = 'VIABLE';
+            } else {
+                cardFloor.className = 'kpi-card fail';
+                badgeFloor.className = 'kpi-status-badge status-fail';
+                badgeFloor.textContent = 'INSUFICIENTE';
+            }
+
+            // Métricas Complementarias
+            document.getElementById('metricTotalTrades').textContent = orders.length;
+            var winRate = orders.length > 0 ? ((winningTrades / orders.length) * 100).toFixed(1) : 0;
+            document.getElementById('metricWinRate').textContent = winRate + '%';
+
+            var avgBars = orders.length > 0 ? (totalBars / orders.length).toFixed(1) : 0;
+            document.getElementById('metricAvgBars').textContent = avgBars + ' barras';
+
+            var halfLifeRef = parseFloat(document.getElementById('halfLifeInput').value) || 12;
+            var hlRatio = halfLifeRef > 0 ? (avgBars / halfLifeRef).toFixed(2) : '1.0';
+            document.getElementById('metricHalfLifeRatio').textContent = hlRatio + 'x de \u03C4_OU';
+
+            document.getElementById('metricAvgMAE').textContent = formatUSD(orders.length > 0 ? -(totalMAE / orders.length) : 0);
+            document.getElementById('metricAvgMFE').textContent = formatUSD(orders.length > 0 ? (totalMFE / orders.length) : 0);
+            document.getElementById('dailyCountLabel').textContent = dailyList.length + ' sesiones evaluadas';
+
+            // Renderizar Gráficos y Tablas
+            renderDailyChart(dailyList);
+            renderExitReasonsChart(exitReasons, orders.length);
+            renderWorstDaysTable(dailyList);
+        }
+
+        // Gráfico de Barras PnL Diario con Línea de DLL
+        function renderDailyChart(dailyList) {
+            var ctx = document.getElementById('dailyPnlChart').getContext('2d');
+            var labels = dailyList.map(function(d) { return d.date; });
+            var dataValues = dailyList.map(function(d) { return d.pnl; });
+            var bgColors = dailyList.map(function(d) {
+                if (d.pnl < -propConfig.dailyLossLimit) return '#f85149'; // Violación DLL
+                return d.pnl >= 0 ? '#2ea043' : '#d29922';
+            });
+
+            if (dailyChartInstance) {
+                dailyChartInstance.destroy();
+            }
+
+            dailyChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'PnL Diario (USD)',
+                        data: dataValues,
+                        backgroundColor: bgColors,
+                        borderRadius: 3
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return 'PnL: ' + formatUSD(context.parsed.y);
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { maxTicksLimit: 12, color: '#8b949e', font: { size: 10 } },
+                            grid: { display: false }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#8b949e',
+                                font: { size: 10 },
+                                callback: function(value) { return '$' + value; }
+                            },
+                            grid: { color: 'rgba(255, 255, 255, 0.08)' }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Gráfico de Dona para Motivos de Salida
+        function renderExitReasonsChart(exitReasons, totalOrders) {
+            var ctx = document.getElementById('exitReasonsChart').getContext('2d');
+            var labels = Object.keys(exitReasons);
+            var dataValues = Object.values(exitReasons);
+
+            var palette = ['#2ea043', '#388bfd', '#d29922', '#f85149', '#a371f7', '#8b949e'];
+
+            if (exitChartInstance) {
+                exitChartInstance.destroy();
+            }
+
+            exitChartInstance = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: dataValues,
+                        backgroundColor: palette.slice(0, labels.length),
+                        borderWidth: 1,
+                        borderColor: '#212634'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '68%'
+                }
+            });
+
+            // Leyenda personalizada HTML
+            var legendHtml = '<div style="display:flex; flex-direction:column; gap:6px;">';
+            labels.forEach(function(label, idx) {
+                var count = dataValues[idx];
+                var pct = totalOrders > 0 ? ((count / totalOrders) * 100).toFixed(1) : 0;
+                var color = palette[idx % palette.length];
+                legendHtml += '<div style="display:flex; justify-content:space-between; align-items:center; font-size:11px;">' +
+                    '<span style="display:flex; align-items:center; gap:6px;"><span style="width:10px; height:10px; border-radius:50%; background:' + color + ';"></span>' + label + '</span>' +
+                    '<span style="font-weight:600;">' + count + ' (' + pct + '%)</span>' +
+                    '</div>';
+            });
+            legendHtml += '</div>';
+            document.getElementById('exitLegendContainer').innerHTML = legendHtml;
+        }
+
+        // Tabla de los 5 Peores Días
+        function renderWorstDaysTable(dailyList) {
+            var tbody = document.querySelector('#worstDaysTable tbody');
+            tbody.innerHTML = '';
+
+            var sorted = dailyList.slice().sort(function(a, b) {
+                return a.pnl - b.pnl; // Menor a mayor (peores primero)
+            });
+
+            var topWorst = sorted.slice(0, 5);
+            topWorst.forEach(function(day) {
+                var tr = document.createElement('tr');
+                var isBreach = day.pnl < -propConfig.dailyLossLimit;
+                var statusHtml = isBreach 
+                    ? '<span class="status-fail" style="padding:2px 6px; border-radius:3px;">BREACH</span>'
+                    : '<span class="status-pass" style="padding:2px 6px; border-radius:3px;">PASS</span>';
+
+                tr.innerHTML = '<td>' + day.date + '</td>' +
+                    '<td>' + day.trades + '</td>' +
+                    '<td class="' + (day.pnl >= 0 ? 'text-green' : 'text-red') + '">' + formatUSD(day.pnl) + '</td>' +
+                    '<td>' + statusHtml + '</td>';
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Helpers y Constantes
+        function formatUSD(amount) {
+            return (amount < 0 ? '-$' : '$') + Math.abs(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function getCloseTypeLabel(code) {
+            switch(parseInt(code)) {
+                case 1: return 'Manual';
+                case 2: return 'Stop Loss';
+                case 3: return 'Profit Target';
+                case 4: return 'Fin de Test';
+                case 5: return 'Cierre EOD';
+                case 19: return 'Exit Tras X Barras';
+                case 20: return 'Move SL to BE';
+                case 21: return 'Trailing Stop';
+                case 22: return 'Señal Salida (S->0)';
+                default: return 'Otro (' + code + ')';
+            }
+        }
+
+        function applyPreset() {
+            var preset = document.getElementById('propPreset').value;
+            if (preset === '50k') {
+                propConfig.dailyLossLimit = 1500;
+                propConfig.maxTrailingDD = 3000;
+                propConfig.profitTarget = 3000;
+                document.getElementById('limitDLLText').textContent = '-$1,500';
+                document.getElementById('limitDDText').textContent = '-$3,000';
+                document.getElementById('targetSubtext').textContent = 'Progreso hacia $3,000';
+            } else if (preset === '100k') {
+                propConfig.dailyLossLimit = 3000;
+                propConfig.maxTrailingDD = 6000;
+                propConfig.profitTarget = 6000;
+                document.getElementById('limitDLLText').textContent = '-$3,000';
+                document.getElementById('limitDDText').textContent = '-$6,000';
+                document.getElementById('targetSubtext').textContent = 'Progreso hacia $6,000';
+            }
+            recalculateMetrics();
+        }
+
+        // DEMO MODE: Si se abre fuera de SQX (ej. doble click o servidor local)
+        function initDemoModeIfNeeded() {
+            var isInIframe = window.self !== window.top;
+            if (!isInIframe) {
+                document.getElementById('demoAlert').style.display = 'block';
+                document.getElementById('strategyNameLabel').textContent = 'F4_ES_NQ_OU_IS_2023 [DEMO]';
+                document.getElementById('databankLabel').textContent = 'Results_IS_2023';
+
+                // Generar 120 órdenes sintéticas realistas de arbitraje F4
+                var demoOrders = [];
+                var startDate = new Date('2023-01-03T09:30:00Z');
+                var cumulativePL = 0;
+
+                for (var i = 0; i < 110; i++) {
+                    var isWin = Math.random() < 0.72; // Win Rate 72%
+                    var pl = isWin ? (150 + Math.random() * 280) : (-180 - Math.random() * 320);
+                    cumulativePL += pl;
+
+                    var tradeDate = new Date(startDate.getTime() + (i * 1.8 * 86400000));
+                    var barsInTrade = Math.floor(4 + Math.random() * 18); // Alrededor de vida media 12
+
+                    demoOrders.push({
+                        Ticket: 1000 + i,
+                        Symbol: 'ES_NQ_SYNTH',
+                        OpenTime: tradeDate.getTime(),
+                        CloseTime: tradeDate.getTime() + (barsInTrade * 5 * 60000),
+                        ProfitLoss: pl,
+                        BarsInTrade: barsInTrade,
+                        MAE: Math.random() * 120,
+                        MFE: Math.random() * 300,
+                        CloseType: isWin ? (Math.random() < 0.8 ? 22 : 3) : (Math.random() < 0.7 ? 2 : 5)
+                    });
+                }
+
+                var demoStats = {
+                    ProfitFactor: 2.14,
+                    SharpeRatio: 2.38,
+                    SQN: 3.45,
+                    Symmetry: 0.96,
+                    GrossProfit: 21500,
+                    Commission: 850,
+                    SlippageInMoney: 420
+                };
+
+                onStatsResponse({ stats: demoStats });
+                onOrdersResponse({ orders: demoOrders });
+            }
+        }
+
+        // Ejecutar verificación de entorno al cargar
+        window.addEventListener('DOMContentLoaded', function() {
+            initDemoModeIfNeeded();
+        });
+    </script>
+</body>
+</html>

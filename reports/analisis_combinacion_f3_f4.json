@@ -1,0 +1,163 @@
+{
+  "concurrency": {
+    "total_overlapping_episodes": 20,
+    "overlapping_trades_sample": [
+      {
+        "t3_entry": "2023-01-03 11:05:00",
+        "t3_exit": "2023-01-03 11:15:00",
+        "t3_direction": "SHORT",
+        "t4_entry": "2023-01-03 10:35:00",
+        "t4_exit": "2023-01-03 12:30:00",
+        "t4_signal": "SELL_SPREAD",
+        "t4_direction": -1
+      },
+      {
+        "t3_entry": "2023-01-04 12:05:00",
+        "t3_exit": "2023-01-04 12:10:00",
+        "t3_direction": "SHORT",
+        "t4_entry": "2023-01-04 10:35:00",
+        "t4_exit": "2023-01-04 12:40:00",
+        "t4_signal": "BUY_SPREAD",
+        "t4_direction": 1
+      },
+      {
+        "t3_entry": "2023-02-15 12:50:00",
+        "t3_exit": "2023-02-15 12:55:00",
+        "t3_direction": "LONG",
+        "t4_entry": "2023-02-15 12:15:00",
+        "t4_exit": "2023-02-15 13:05:00",
+        "t4_signal": "SELL_SPREAD",
+        "t4_direction": -1
+      },
+      {
+        "t3_entry": "2023-03-31 12:50:00",
+        "t3_exit": "2023-03-31 13:00:00",
+        "t3_direction": "LONG",
+        "t4_entry": "2023-03-31 12:45:00",
+        "t4_exit": "2023-03-31 15:20:00",
+        "t4_signal": "BUY_SPREAD",
+        "t4_direction": 1
+      },
+      {
+        "t3_entry": "2023-07-31 14:45:00",
+        "t3_exit": "2023-07-31 15:15:00",
+        "t3_direction": "SHORT",
+        "t4_entry": "2023-07-31 14:00:00",
+        "t4_exit": "2023-07-31 15:45:00",
+        "t4_signal": "SELL_SPREAD",
+        "t4_direction": -1
+      }
+    ],
+    "max_concurrent_micro_contracts_est": 25,
+    "max_margin_intraday_usd_est": 2500.0,
+    "margin_capacity_50k_pct": 5.0
+  },
+  "scenarios": [
+    {
+      "scenario": "Equal Weight (50% F3 / 50% F4)",
+      "weight_f3": 0.5,
+      "weight_f4": 0.5,
+      "net_profit_usd": 19412.89,
+      "portfolio_max_dd_usd": 892.14,
+      "dd_reduction_pct": 34.76,
+      "sharpe_daily": 9.86,
+      "profit_factor": 6.32,
+      "worst_day_usd": -294.01,
+      "dll_violations": 0,
+      "target_reached": true,
+      "compliance_status": "🟢 PROFIT TARGET ALCANZADO (Aprobada sin violaciones)"
+    },
+    {
+      "scenario": "StatArb Dominant (30% F3 / 70% F4)",
+      "weight_f3": 0.3,
+      "weight_f4": 0.7,
+      "net_profit_usd": 27381.04,
+      "portfolio_max_dd_usd": 535.29,
+      "dd_reduction_pct": 60.86,
+      "sharpe_daily": 10.37,
+      "profit_factor": 8.0,
+      "worst_day_usd": -411.61,
+      "dll_violations": 0,
+      "target_reached": true,
+      "compliance_status": "🟢 PROFIT TARGET ALCANZADO (Aprobada sin violaciones)"
+    },
+    {
+      "scenario": "StatArb Dominant (20% F3 / 80% F4)",
+      "weight_f3": 0.2,
+      "weight_f4": 0.8,
+      "net_profit_usd": 31365.12,
+      "portfolio_max_dd_usd": 476.28,
+      "dd_reduction_pct": 65.17,
+      "sharpe_daily": 10.48,
+      "profit_factor": 8.75,
+      "worst_day_usd": -470.42,
+      "dll_violations": 0,
+      "target_reached": true,
+      "compliance_status": "🟢 PROFIT TARGET ALCANZADO (Aprobada sin violaciones)"
+    },
+    {
+      "scenario": "Reversion Balanced (40% F3 / 60% F4)",
+      "weight_f3": 0.4,
+      "weight_f4": 0.6,
+      "net_profit_usd": 23396.97,
+      "portfolio_max_dd_usd": 713.71,
+      "dd_reduction_pct": 47.81,
+      "sharpe_daily": 10.18,
+      "profit_factor": 7.19,
+      "worst_day_usd": -352.81,
+      "dll_violations": 0,
+      "target_reached": true,
+      "compliance_status": "🟢 PROFIT TARGET ALCANZADO (Aprobada sin violaciones)"
+    },
+    {
+      "scenario": "VWAP Weighted (60% F3 / 40% F4)",
+      "weight_f3": 0.6,
+      "weight_f4": 0.4,
+      "net_profit_usd": 15428.82,
+      "portfolio_max_dd_usd": 1070.57,
+      "dd_reduction_pct": 21.71,
+      "sharpe_daily": 9.29,
+      "profit_factor": 5.39,
+      "worst_day_usd": -235.21,
+      "dll_violations": 0,
+      "target_reached": true,
+      "compliance_status": "🟢 PROFIT TARGET ALCANZADO (Aprobada sin violaciones)"
+    },
+    {
+      "scenario": "Inverse Volatility (Risk Parity)",
+      "weight_f3": 0.77,
+      "weight_f4": 0.23,
+      "net_profit_usd": 8637.98,
+      "portfolio_max_dd_usd": 1374.7,
+      "dd_reduction_pct": 0.0,
+      "sharpe_daily": 6.97,
+      "profit_factor": 3.52,
+      "worst_day_usd": -144.01,
+      "dll_violations": 0,
+      "target_reached": true,
+      "compliance_status": "🟢 PROFIT TARGET ALCANZADO (Aprobada sin violaciones)"
+    }
+  ],
+  "monte_carlo_5000": {
+    "total_trades": 507,
+    "win_rate_pct": 61.93,
+    "erdos_renyi_expected_loss_streak": 6.05,
+    "empirical_max_loss_streak": 18,
+    "reshuffle": {
+      "risk_of_ruin_pct": 0.0,
+      "target_before_ruin_pct": 100.0,
+      "p95_drawdown_usd": 615.32,
+      "p99_drawdown_usd": 755.1,
+      "worst_case_drawdown_usd": 1055.54,
+      "cvar_95_drawdown_usd": 696.39
+    },
+    "bootstrap": {
+      "risk_of_ruin_pct": 0.0,
+      "target_before_ruin_pct": 100.0,
+      "p95_drawdown_usd": 637.02,
+      "p99_drawdown_usd": 802.08,
+      "worst_case_drawdown_usd": 1261.08,
+      "cvar_95_drawdown_usd": 739.68
+    }
+  }
+}

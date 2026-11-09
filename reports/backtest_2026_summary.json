@@ -1,0 +1,90 @@
+[
+  {
+    "label": "CME_EXT_2026 (Base)",
+    "time_filter": "none",
+    "start": "2026-08-26 00:05:00",
+    "end": "2026-11-04 18:05:00",
+    "bars": 13873,
+    "trades_count": 0,
+    "metrics": {
+      "Total Trades": 0,
+      "Winning Trades": 0,
+      "Losing Trades": 0,
+      "Win Rate (%)": 0.0,
+      "Profit Factor": 0.0,
+      "Net Profit ($)": 0.0,
+      "Total Return (%)": 0.0,
+      "Max Drawdown ($)": 0.0,
+      "Sharpe Ratio (Daily 252d)": 0.0,
+      "Sharpe Ratio (Per Trade)": 0.0,
+      "Sortino Ratio (Daily 252d)": 0.0,
+      "Annualized Return (%)": 0.0
+    }
+  },
+  {
+    "label": "CME_EXT_2026 (Filtro Horario < 15:40)",
+    "time_filter": "sqx_1540",
+    "start": "2026-08-26 00:05:00",
+    "end": "2026-11-04 18:05:00",
+    "bars": 13873,
+    "trades_count": 0,
+    "metrics": {
+      "Total Trades": 0,
+      "Winning Trades": 0,
+      "Losing Trades": 0,
+      "Win Rate (%)": 0.0,
+      "Profit Factor": 0.0,
+      "Net Profit ($)": 0.0,
+      "Total Return (%)": 0.0,
+      "Max Drawdown ($)": 0.0,
+      "Sharpe Ratio (Daily 252d)": 0.0,
+      "Sharpe Ratio (Per Trade)": 0.0,
+      "Sortino Ratio (Daily 252d)": 0.0,
+      "Annualized Return (%)": 0.0
+    }
+  },
+  {
+    "label": "CME_MINI_2026 (Base)",
+    "time_filter": "none",
+    "start": "2026-10-13 12:20:00",
+    "end": "2026-11-06 15:55:00",
+    "bars": 5000,
+    "trades_count": 0,
+    "metrics": {
+      "Total Trades": 0,
+      "Winning Trades": 0,
+      "Losing Trades": 0,
+      "Win Rate (%)": 0.0,
+      "Profit Factor": 0.0,
+      "Net Profit ($)": 0.0,
+      "Total Return (%)": 0.0,
+      "Max Drawdown ($)": 0.0,
+      "Sharpe Ratio (Daily 252d)": 0.0,
+      "Sharpe Ratio (Per Trade)": 0.0,
+      "Sortino Ratio (Daily 252d)": 0.0,
+      "Annualized Return (%)": 0.0
+    }
+  },
+  {
+    "label": "CME_MINI_2026 (Filtro Horario < 15:40)",
+    "time_filter": "sqx_1540",
+    "start": "2026-10-13 12:20:00",
+    "end": "2026-11-06 15:55:00",
+    "bars": 5000,
+    "trades_count": 0,
+    "metrics": {
+      "Total Trades": 0,
+      "Winning Trades": 0,
+      "Losing Trades": 0,
+      "Win Rate (%)": 0.0,
+      "Profit Factor": 0.0,
+      "Net Profit ($)": 0.0,
+      "Total Return (%)": 0.0,
+      "Max Drawdown ($)": 0.0,
+      "Sharpe Ratio (Daily 252d)": 0.0,
+      "Sharpe Ratio (Per Trade)": 0.0,
+      "Sortino Ratio (Daily 252d)": 0.0,
+      "Annualized Return (%)": 0.0
+    }
+  }
+]

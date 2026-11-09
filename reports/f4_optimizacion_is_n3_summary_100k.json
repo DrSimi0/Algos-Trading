@@ -1,0 +1,72 @@
+{
+  "strategy": "F4-Optimizacion -IS- N3",
+  "parameters": {
+    "contract_mode": "micro",
+    "use_kalman": false,
+    "unify_beta_ols": true,
+    "max_coprime_nq": 7,
+    "allow_sub_baskets": true,
+    "dynamic_basket_ratio": true,
+    "s_open": 1.25,
+    "s_close": 0.25,
+    "s_stop": 3.25,
+    "k_calib": 2340,
+    "min_calib_bars": 390,
+    "phi_dll": 0.35,
+    "psi_tmdd": 0.2,
+    "survival_floor": 105.0,
+    "time_decay_multiplier": 3.5,
+    "n_basket_max": 3,
+    "source_tz": "America/Mexico_City",
+    "target_tz": "America/New_York"
+  },
+  "prop_evaluation": {
+    "status": "PASS",
+    "reason": "Profit Target Achieved",
+    "target_achieved_date": "2023-01-26 00:00:00-05:00",
+    "final_balance": 140031.9,
+    "net_profit": 40031.9,
+    "peak_equity": 140044.07,
+    "final_floor": 100000.0,
+    "total_days_evaluated": 717,
+    "early_stopping_disabled": true
+  },
+  "metrics": {
+    "Total Trades": 326,
+    "Winning Trades": 264,
+    "Losing Trades": 62,
+    "Win Rate (%)": 80.98,
+    "Gross Profit ($)": 48599.68,
+    "Gross Loss ($)": 8567.78,
+    "Profit Factor": 5.67,
+    "Net Profit ($)": 40031.9,
+    "Total Return (%)": 40.03,
+    "Annualized Return (%)": 14.07,
+    "Max Drawdown ($)": 895.7,
+    "Sharpe Ratio (Daily 252d)": 5.65,
+    "Sharpe Ratio (Per Trade)": 0.7771,
+    "Sortino Ratio (Daily 252d)": 4.68,
+    "Exit Reasons": {
+      "TAKE_PROFIT": 221,
+      "EOD_FLAT": 74,
+      "STOP_LOSS": 21,
+      "TIME_DECAY": 10
+    }
+  },
+  "cointegration_audit": {
+    "bars_evaluated": 44835,
+    "valid_ou_count": 44551,
+    "valid_ou_pct": 99.37,
+    "adf_passed_count": 32697,
+    "adf_passed_pct": 73.39,
+    "tau_passed_count": 34796,
+    "tau_passed_pct": 78.1,
+    "both_passed_count": 30127,
+    "both_passed_pct": 67.62,
+    "mean_beta": 0.8499,
+    "min_beta": 0.8274,
+    "max_beta": 0.9043,
+    "mean_tau_half_min": 212.6,
+    "mean_sigma_eq": 0.001118
+  }
+}

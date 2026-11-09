@@ -1,0 +1,625 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StrategyFile Version="3.9.132">
+  <options>
+    <StrategyName>F4-EstrategiaCointegracion ESNQ</StrategyName>
+    <Engine>MetaTrader4</Engine>
+    <OnlineVersion>false</OnlineVersion>
+    <Version>3.9.132</Version>
+    <Date>11/07/2026 14:23</Date>
+    <ID>wz4qh60k</ID>
+    <MinDistance>0</MinDistance>
+  </options>
+  <Strategy name="F4-EstrategiaCointegracion ESNQ" engine="MetaTrader4">
+    <Note width="0" height="0" left="0" top="0" type="NONE" />
+    <Description />
+    <MoneyManagement type="FixedSize">
+      <Method>
+        <Params>
+          <Param key="Size" className="FixedSize">0.1</Param>
+        </Params>
+      </Method>
+      <InitialCapital>100000</InitialCapital>
+    </MoneyManagement>
+    <GlobalSLPT>
+      <useSameSLPTforBothDirections>true</useSameSLPTforBothDirections>
+      <values>
+        <globalSL>
+          <values type="fixed">
+            <value>0</value>
+          </values>
+        </globalSL>
+        <globalPT>
+          <values type="fixed">
+            <value>0</value>
+          </values>
+        </globalPT>
+      </values>
+    </GlobalSLPT>
+    <Rules>
+      <Events>
+        <Event key="OnInit" />
+        <Event key="OnBarUpdate">
+          <Rule name="Trading signals" type="Signal" everyTick="false" event="OnBarUpdate">
+            <signals>
+              <signal variable="33333333-1111-1111-3333-333333333333">
+                <Item key="AND">
+                  <Block>
+                    <Item customSnippet="false" key="IsLowerOrEqual" name="(&lt;=) Is lower or equal" display="#Left# &lt;= #Right#" returnType="boolean" mI="Comparisons" categoryType="operators" generated="random" randomId="RandomConditionLong" openingBrackets="0" closingBrackets="0">
+                      <Block key="#Left#" name="Left" type="value" controlType="value">
+                        <Item customSnippet="false" key="Close" name="(C) Close" display="Close[@Chart@#Shift#]" returnType="price" mI="Price" categoryType="priceValue" generated="random" randomId="RandomConditionLong">
+                          <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                          <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                        </Item>
+                      </Block>
+                      <Block key="#Right#" name="Right" type="value" controlType="value">
+                        <Item customSnippet="false" key="Minus" name="(-) Minus" display="(#Left# - #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                          <Block key="#Left#" name="Left" type="value" controlType="value">
+                            <Item customSnippet="false" key="SMA" name="(SMA) Simple Moving Average" display="SMA(@Chart@#Period#)[#Shift#]" returnType="price" help="Simple Moving Average" mI="MovingAverage" categoryType="indicator" generated="random" randomId="RandomConditionLong">
+                              <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                              <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                              <Param key="#Period#" name="Period" type="int" defaultValue="14" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="1" maxValue="10000" step="1" builderStep="1">60</Param>
+                              <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                            </Item>
+                          </Block>
+                          <Block key="#Right#" name="Right" type="value" controlType="value">
+                            <Item customSnippet="false" key="Multiplication" name="(*) Multiplication" display="(#Left# * #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                              <Block key="#Left#" name="Left" type="value" controlType="value">
+                                <Item customSnippet="false" key="Number" name="(NUM) Number" display="#Number#" returnType="number" help="Number constant" mI="Other" categoryType="other" notFirstValue="true">
+                                  <Param key="#Number#" name="Number" type="double" defaultValue="1.25" controlType="jspinner" minValue="-999999999" maxValue="999999999" step="1" builderStep="1">1.25</Param>
+                                </Item>
+                              </Block>
+                              <Block key="#Right#" name="Right" type="value" controlType="value">
+                                <Item customSnippet="false" key="StdDev" name="(STDDEV) Standard Deviation" display="StdDev(@Chart@#Period#)[#Shift#]" returnType="number" help="Simple Moving Average" mI="StdDev" categoryType="indicator" indicatorMin="0" indicatorMax="1" indicatorStep="0.01" generated="random" randomId="RandomConditionLong">
+                                  <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                                  <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                                  <Param key="#Period#" name="Period" type="int" defaultValue="20" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="2" maxValue="10000" step="1" builderStep="1">60</Param>
+                                  <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                                </Item>
+                              </Block>
+                            </Item>
+                          </Block>
+                        </Item>
+                      </Block>
+                    </Item>
+                  </Block>
+                  <Block>
+                    <Item customSnippet="false" key="IsGreater" name="(&gt;) Is greater" display="#Left# &gt; #Right#" returnType="boolean" mI="Comparisons" categoryType="operators" generated="random" randomId="RandomConditionLong" openingBrackets="0" closingBrackets="0">
+                      <Block key="#Left#" name="Left" type="value" controlType="value">
+                        <Item customSnippet="false" key="Close" name="(C) Close" display="Close[@Chart@#Shift#]" returnType="price" mI="Price" categoryType="priceValue" generated="random" randomId="RandomConditionLong">
+                          <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                          <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                        </Item>
+                      </Block>
+                      <Block key="#Right#" name="Right" type="value" controlType="value">
+                        <Item customSnippet="false" key="Minus" name="(-) Minus" display="(#Left# - #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                          <Block key="#Left#" name="Left" type="value" controlType="value">
+                            <Item customSnippet="false" key="SMA" name="(SMA) Simple Moving Average" display="SMA(@Chart@#Period#)[#Shift#]" returnType="price" help="Simple Moving Average" mI="MovingAverage" categoryType="indicator" generated="random" randomId="RandomConditionLong">
+                              <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                              <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                              <Param key="#Period#" name="Period" type="int" defaultValue="14" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="1" maxValue="10000" step="1" builderStep="1">60</Param>
+                              <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                            </Item>
+                          </Block>
+                          <Block key="#Right#" name="Right" type="value" controlType="value">
+                            <Item customSnippet="false" key="Multiplication" name="(*) Multiplication" display="(#Left# * #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                              <Block key="#Left#" name="Left" type="value" controlType="value">
+                                <Item customSnippet="false" key="Number" name="(NUM) Number" display="#Number#" returnType="number" help="Number constant" mI="Other" categoryType="other" notFirstValue="true">
+                                  <Param key="#Number#" name="Number" type="double" defaultValue="3" controlType="jspinner" minValue="-999999999" maxValue="999999999" step="1" builderStep="1">3</Param>
+                                </Item>
+                              </Block>
+                              <Block key="#Right#" name="Right" type="value" controlType="value">
+                                <Item customSnippet="false" key="StdDev" name="(STDDEV) Standard Deviation" display="StdDev(@Chart@#Period#)[#Shift#]" returnType="number" help="Simple Moving Average" mI="StdDev" categoryType="indicator" indicatorMin="0" indicatorMax="1" indicatorStep="0.01" generated="random" randomId="RandomConditionLong">
+                                  <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                                  <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                                  <Param key="#Period#" name="Period" type="int" defaultValue="20" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="2" maxValue="10000" step="1" builderStep="1">60</Param>
+                                  <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                                </Item>
+                              </Block>
+                            </Item>
+                          </Block>
+                        </Item>
+                      </Block>
+                    </Item>
+                  </Block>
+                </Item>
+              </signal>
+              <signal variable="33333333-2222-1111-3333-333333333333">
+                <Item key="AND">
+                  <Block>
+                    <Item customSnippet="false" key="IsGreaterOrEqual" name="(&gt;=) Is greater or equal" display="#Left# &gt;= #Right#" returnType="boolean" mI="Comparisons" categoryType="operators" generated="random" randomId="RandomConditionShort" openingBrackets="0" closingBrackets="0">
+                      <Block key="#Left#" name="Left" type="value" controlType="value">
+                        <Item customSnippet="false" key="Close" name="(C) Close" display="Close[@Chart@#Shift#]" returnType="price" mI="Price" categoryType="priceValue" generated="random" randomId="RandomConditionShort">
+                          <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                          <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                        </Item>
+                      </Block>
+                      <Block key="#Right#" name="Right" type="value" controlType="value">
+                        <Item customSnippet="false" key="Plus" name="(+) Plus" display="(#Left# + #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                          <Block key="#Left#" name="Left" type="value" controlType="value">
+                            <Item customSnippet="false" key="SMA" name="(SMA) Simple Moving Average" display="SMA(@Chart@#Period#)[#Shift#]" returnType="price" help="Simple Moving Average" mI="MovingAverage" categoryType="indicator" generated="random" randomId="RandomConditionShort">
+                              <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                              <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                              <Param key="#Period#" name="Period" type="int" defaultValue="14" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="1" maxValue="10000" step="1" builderStep="1">60</Param>
+                              <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                            </Item>
+                          </Block>
+                          <Block key="#Right#" name="Right" type="value" controlType="value">
+                            <Item customSnippet="false" key="Multiplication" name="(*) Multiplication" display="(#Left# * #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                              <Block key="#Left#" name="Left" type="value" controlType="value">
+                                <Item customSnippet="false" key="Number" name="(NUM) Number" display="#Number#" returnType="number" help="Number constant" mI="Other" categoryType="other" notFirstValue="true">
+                                  <Param key="#Number#" name="Number" type="double" defaultValue="1.25" controlType="jspinner" minValue="-999999999" maxValue="999999999" step="1" builderStep="1">1.25</Param>
+                                </Item>
+                              </Block>
+                              <Block key="#Right#" name="Right" type="value" controlType="value">
+                                <Item customSnippet="false" key="StdDev" name="(STDDEV) Standard Deviation" display="StdDev(@Chart@#Period#)[#Shift#]" returnType="number" help="Simple Moving Average" mI="StdDev" categoryType="indicator" indicatorMin="0" indicatorMax="1" indicatorStep="0.01" generated="random" randomId="RandomConditionShort">
+                                  <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                                  <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                                  <Param key="#Period#" name="Period" type="int" defaultValue="20" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="2" maxValue="10000" step="1" builderStep="1">60</Param>
+                                  <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                                </Item>
+                              </Block>
+                            </Item>
+                          </Block>
+                        </Item>
+                      </Block>
+                    </Item>
+                  </Block>
+                  <Block>
+                    <Item customSnippet="false" key="IsLower" name="(&lt;) Is lower" display="#Left# &lt; #Right#" returnType="boolean" mI="Comparisons" categoryType="operators" generated="random" randomId="RandomConditionShort" openingBrackets="0" closingBrackets="0">
+                      <Block key="#Left#" name="Left" type="value" controlType="value">
+                        <Item customSnippet="false" key="Close" name="(C) Close" display="Close[@Chart@#Shift#]" returnType="price" mI="Price" categoryType="priceValue" generated="random" randomId="RandomConditionShort">
+                          <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                          <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                        </Item>
+                      </Block>
+                      <Block key="#Right#" name="Right" type="value" controlType="value">
+                        <Item customSnippet="false" key="Plus" name="(+) Plus" display="(#Left# + #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                          <Block key="#Left#" name="Left" type="value" controlType="value">
+                            <Item customSnippet="false" key="SMA" name="(SMA) Simple Moving Average" display="SMA(@Chart@#Period#)[#Shift#]" returnType="price" help="Simple Moving Average" mI="MovingAverage" categoryType="indicator" generated="random" randomId="RandomConditionShort">
+                              <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                              <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                              <Param key="#Period#" name="Period" type="int" defaultValue="14" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="1" maxValue="10000" step="1" builderStep="1">60</Param>
+                              <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                            </Item>
+                          </Block>
+                          <Block key="#Right#" name="Right" type="value" controlType="value">
+                            <Item customSnippet="false" key="Multiplication" name="(*) Multiplication" display="(#Left# * #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                              <Block key="#Left#" name="Left" type="value" controlType="value">
+                                <Item customSnippet="false" key="Number" name="(NUM) Number" display="#Number#" returnType="number" help="Number constant" mI="Other" categoryType="other" notFirstValue="true">
+                                  <Param key="#Number#" name="Number" type="double" defaultValue="3" controlType="jspinner" minValue="-999999999" maxValue="999999999" step="1" builderStep="1">3</Param>
+                                </Item>
+                              </Block>
+                              <Block key="#Right#" name="Right" type="value" controlType="value">
+                                <Item customSnippet="false" key="StdDev" name="(STDDEV) Standard Deviation" display="StdDev(@Chart@#Period#)[#Shift#]" returnType="number" help="Simple Moving Average" mI="StdDev" categoryType="indicator" indicatorMin="0" indicatorMax="1" indicatorStep="0.01" generated="random" randomId="RandomConditionShort">
+                                  <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                                  <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                                  <Param key="#Period#" name="Period" type="int" defaultValue="20" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="2" maxValue="10000" step="1" builderStep="1">60</Param>
+                                  <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                                </Item>
+                              </Block>
+                            </Item>
+                          </Block>
+                        </Item>
+                      </Block>
+                    </Item>
+                  </Block>
+                </Item>
+              </signal>
+              <signal variable="33333333-1111-2222-3333-333333333333">
+                <Item key="OR">
+                  <Block>
+                    <Item customSnippet="false" key="IsGreaterOrEqual" name="(&gt;=) Is greater or equal" display="#Left# &gt;= #Right#" returnType="boolean" mI="Comparisons" categoryType="operators" openingBrackets="0" closingBrackets="0">
+                      <Block key="#Left#" name="Left" type="value" controlType="value">
+                        <Item customSnippet="false" key="Close" name="(C) Close" display="Close[@Chart@#Shift#]" returnType="price" mI="Price" categoryType="priceValue">
+                          <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                          <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                        </Item>
+                      </Block>
+                      <Block key="#Right#" name="Right" type="value" controlType="value">
+                        <Item customSnippet="false" key="Minus" name="(-) Minus" display="(#Left# - #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                          <Block key="#Left#" name="Left" type="value" controlType="value">
+                            <Item customSnippet="false" key="SMA" name="(SMA) Simple Moving Average" display="SMA(@Chart@#Period#)[#Shift#]" returnType="price" help="Simple Moving Average" mI="MovingAverage" categoryType="indicator">
+                              <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                              <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                              <Param key="#Period#" name="Period" type="int" defaultValue="14" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="1" maxValue="10000" step="1" builderStep="1">60</Param>
+                              <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                            </Item>
+                          </Block>
+                          <Block key="#Right#" name="Right" type="value" controlType="value">
+                            <Item customSnippet="false" key="Multiplication" name="(*) Multiplication" display="(#Left# * #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                              <Block key="#Left#" name="Left" type="value" controlType="value">
+                                <Item customSnippet="false" key="Number" name="(NUM) Number" display="#Number#" returnType="number" help="Number constant" mI="Other" categoryType="other" notFirstValue="true">
+                                  <Param key="#Number#" name="Number" type="double" defaultValue="0.5" controlType="jspinner" minValue="-999999999" maxValue="999999999" step="1" builderStep="1">0.5</Param>
+                                </Item>
+                              </Block>
+                              <Block key="#Right#" name="Right" type="value" controlType="value">
+                                <Item customSnippet="false" key="StdDev" name="(STDDEV) Standard Deviation" display="StdDev(@Chart@#Period#)[#Shift#]" returnType="number" help="Simple Moving Average" mI="StdDev" categoryType="indicator" indicatorMin="0" indicatorMax="1" indicatorStep="0.01">
+                                  <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                                  <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                                  <Param key="#Period#" name="Period" type="int" defaultValue="20" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="2" maxValue="10000" step="1" builderStep="1">60</Param>
+                                  <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                                </Item>
+                              </Block>
+                            </Item>
+                          </Block>
+                        </Item>
+                      </Block>
+                    </Item>
+                  </Block>
+                  <Block>
+                    <Item customSnippet="false" key="IsLowerOrEqual" name="(&lt;=) Is lower or equal" display="#Left# &lt;= #Right#" returnType="boolean" mI="Comparisons" categoryType="operators" openingBrackets="0" closingBrackets="0">
+                      <Block key="#Left#" name="Left" type="value" controlType="value">
+                        <Item customSnippet="false" key="Close" name="(C) Close" display="Close[@Chart@#Shift#]" returnType="price" mI="Price" categoryType="priceValue">
+                          <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                          <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                        </Item>
+                      </Block>
+                      <Block key="#Right#" name="Right" type="value" controlType="value">
+                        <Item customSnippet="false" key="Minus" name="(-) Minus" display="(#Left# - #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                          <Block key="#Left#" name="Left" type="value" controlType="value">
+                            <Item customSnippet="false" key="SMA" name="(SMA) Simple Moving Average" display="SMA(@Chart@#Period#)[#Shift#]" returnType="price" help="Simple Moving Average" mI="MovingAverage" categoryType="indicator">
+                              <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                              <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                              <Param key="#Period#" name="Period" type="int" defaultValue="14" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="1" maxValue="10000" step="1" builderStep="1">60</Param>
+                              <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                            </Item>
+                          </Block>
+                          <Block key="#Right#" name="Right" type="value" controlType="value">
+                            <Item customSnippet="false" key="Multiplication" name="(*) Multiplication" display="(#Left# * #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                              <Block key="#Left#" name="Left" type="value" controlType="value">
+                                <Item customSnippet="false" key="Number" name="(NUM) Number" display="#Number#" returnType="number" help="Number constant" mI="Other" categoryType="other" notFirstValue="true">
+                                  <Param key="#Number#" name="Number" type="double" defaultValue="3" controlType="jspinner" minValue="-999999999" maxValue="999999999" step="1" builderStep="1">3</Param>
+                                </Item>
+                              </Block>
+                              <Block key="#Right#" name="Right" type="value" controlType="value">
+                                <Item customSnippet="false" key="StdDev" name="(STDDEV) Standard Deviation" display="StdDev(@Chart@#Period#)[#Shift#]" returnType="number" help="Simple Moving Average" mI="StdDev" categoryType="indicator" indicatorMin="0" indicatorMax="1" indicatorStep="0.01">
+                                  <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                                  <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                                  <Param key="#Period#" name="Period" type="int" defaultValue="20" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="2" maxValue="10000" step="1" builderStep="1">60</Param>
+                                  <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                                </Item>
+                              </Block>
+                            </Item>
+                          </Block>
+                        </Item>
+                      </Block>
+                    </Item>
+                  </Block>
+                </Item>
+              </signal>
+              <signal variable="33333333-2222-2222-3333-333333333333">
+                <Item key="OR">
+                  <Block>
+                    <Item customSnippet="false" key="IsLowerOrEqual" name="(&lt;=) Is lower or equal" display="#Left# &lt;= #Right#" returnType="boolean" mI="Comparisons" categoryType="operators" openingBrackets="0" closingBrackets="0">
+                      <Block key="#Left#" name="Left" type="value" controlType="value">
+                        <Item customSnippet="false" key="Close" name="(C) Close" display="Close[@Chart@#Shift#]" returnType="price" mI="Price" categoryType="priceValue">
+                          <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                          <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                        </Item>
+                      </Block>
+                      <Block key="#Right#" name="Right" type="value" controlType="value">
+                        <Item customSnippet="false" key="Plus" name="(+) Plus" display="(#Left# + #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                          <Block key="#Left#" name="Left" type="value" controlType="value">
+                            <Item customSnippet="false" key="SMA" name="(SMA) Simple Moving Average" display="SMA(@Chart@#Period#)[#Shift#]" returnType="price" help="Simple Moving Average" mI="MovingAverage" categoryType="indicator">
+                              <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                              <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                              <Param key="#Period#" name="Period" type="int" defaultValue="14" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="1" maxValue="10000" step="1" builderStep="1">60</Param>
+                              <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                            </Item>
+                          </Block>
+                          <Block key="#Right#" name="Right" type="value" controlType="value">
+                            <Item customSnippet="false" key="Multiplication" name="(*) Multiplication" display="(#Left# * #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                              <Block key="#Left#" name="Left" type="value" controlType="value">
+                                <Item customSnippet="false" key="Number" name="(NUM) Number" display="#Number#" returnType="number" help="Number constant" mI="Other" categoryType="other" notFirstValue="true">
+                                  <Param key="#Number#" name="Number" type="double" defaultValue="0.5" controlType="jspinner" minValue="-999999999" maxValue="999999999" step="1" builderStep="1">0.5</Param>
+                                </Item>
+                              </Block>
+                              <Block key="#Right#" name="Right" type="value" controlType="value">
+                                <Item customSnippet="false" key="StdDev" name="(STDDEV) Standard Deviation" display="StdDev(@Chart@#Period#)[#Shift#]" returnType="number" help="Simple Moving Average" mI="StdDev" categoryType="indicator" indicatorMin="0" indicatorMax="1" indicatorStep="0.01">
+                                  <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                                  <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                                  <Param key="#Period#" name="Period" type="int" defaultValue="20" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="2" maxValue="10000" step="1" builderStep="1">60</Param>
+                                  <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                                </Item>
+                              </Block>
+                            </Item>
+                          </Block>
+                        </Item>
+                      </Block>
+                    </Item>
+                  </Block>
+                  <Block>
+                    <Item customSnippet="false" key="IsGreaterOrEqual" name="(&gt;=) Is greater or equal" display="#Left# &gt;= #Right#" returnType="boolean" mI="Comparisons" categoryType="operators" openingBrackets="0" closingBrackets="0">
+                      <Block key="#Left#" name="Left" type="value" controlType="value">
+                        <Item customSnippet="false" key="Close" name="(C) Close" display="Close[@Chart@#Shift#]" returnType="price" mI="Price" categoryType="priceValue">
+                          <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                          <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                        </Item>
+                      </Block>
+                      <Block key="#Right#" name="Right" type="value" controlType="value">
+                        <Item customSnippet="false" key="Plus" name="(+) Plus" display="(#Left# + #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                          <Block key="#Left#" name="Left" type="value" controlType="value">
+                            <Item customSnippet="false" key="SMA" name="(SMA) Simple Moving Average" display="SMA(@Chart@#Period#)[#Shift#]" returnType="price" help="Simple Moving Average" mI="MovingAverage" categoryType="indicator">
+                              <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                              <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                              <Param key="#Period#" name="Period" type="int" defaultValue="14" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="1" maxValue="10000" step="1" builderStep="1">60</Param>
+                              <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                            </Item>
+                          </Block>
+                          <Block key="#Right#" name="Right" type="value" controlType="value">
+                            <Item customSnippet="false" key="Multiplication" name="(*) Multiplication" display="(#Left# * #Right#)" returnType="pricenumber" ignoreInBuilder="true" mI="Functions" categoryType="other">
+                              <Block key="#Left#" name="Left" type="value" controlType="value">
+                                <Item customSnippet="false" key="Number" name="(NUM) Number" display="#Number#" returnType="number" help="Number constant" mI="Other" categoryType="other" notFirstValue="true">
+                                  <Param key="#Number#" name="Number" type="double" defaultValue="3" controlType="jspinner" minValue="-999999999" maxValue="999999999" step="1" builderStep="1">3</Param>
+                                </Item>
+                              </Block>
+                              <Block key="#Right#" name="Right" type="value" controlType="value">
+                                <Item customSnippet="false" key="StdDev" name="(STDDEV) Standard Deviation" display="StdDev(@Chart@#Period#)[#Shift#]" returnType="number" help="Simple Moving Average" mI="StdDev" categoryType="indicator" indicatorMin="0" indicatorMax="1" indicatorStep="0.01">
+                                  <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                                  <Param key="#ComputedFrom#" name="Computed From" type="int" controlType="combo" values="Close=0,Open=1,High=2,Low=3,Median=4,Typical=5,Weighted=6" defaultValue="0">0</Param>
+                                  <Param key="#Period#" name="Period" type="int" defaultValue="20" genMinValue="-1000003" genMaxValue="-1000004" paramType="period" controlType="jspinnerVar" minValue="2" maxValue="10000" step="1" builderStep="1">60</Param>
+                                  <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">1</Param>
+                                </Item>
+                              </Block>
+                            </Item>
+                          </Block>
+                        </Item>
+                      </Block>
+                    </Item>
+                  </Block>
+                </Item>
+              </signal>
+            </signals>
+          </Rule>
+          <Rule type="IfThen" everyTick="false" name="Long entry" event="OnBarUpdate">
+            <Descriptions />
+            <If>
+              <Item customSnippet="false" key="BooleanVariable" name="(BVAR) Boolean Variable" display="#Variable#" returnType="boolean" help="Boolean Variable" ignoreInBuilder="true" mI="Other" categoryType="other" notFirstValue="true" openingBrackets="0" closingBrackets="0">
+                <Param key="#Variable#" name="Variable" type="boolean" defaultValue="10" controlType="comboVar" builderStep="1" variable="true" variableType="BOOLEAN">33333333-1111-1111-3333-333333333333</Param>
+              </Item>
+            </If>
+            <Then>
+              <Item customSnippet="false" key="EnterReverseAtMarket" name="(MKT) Enter/reverse at market" display="Enter/ReverseAtMarket" returnType="order" help="Opens order at current market price&lt;br/&gt; If there already is existing order to an opposite direction, it closes it first." mI="Open" forEngine="*,-SP,-SA" categoryType="other" generated="random" randomId="RandomActionLong">
+                <Param key="#Symbol#" name="Symbol" type="string" defaultValue="Current" displayOnDefault="false" controlType="symbolVar" paramType="symbol" builderStep="1">Current</Param>
+                <Param key="#Direction#" name="Direction" type="int" defaultValue="1" controlType="combo" values="Long=1,Short=-1" builderStep="1" label="Long" generated="fixed">1</Param>
+                <Param key="#Size#" name="Size" type="double" isFormula="true" controlType="Size" required="true">
+                  <Formula key="SQ.Formulas.Size.UseGlobalMM" name="Use global Money Management" />
+                </Param>
+                <Param key="#MagicNumber#" name="Magic Number" type="int" defaultValue="MagicNumber" displayOnDefault="false" controlType="comboVar" help="Magic number is used to identify this trade, it should be unique for every trade you open." builderStep="1" variable="true" variableType="INT" generated="fixed">11111111-1111-1111-1111-111111111111</Param>
+                <Param key="#Comment#" name="Comment" type="string" defaultValue="" displayOnDefault="false" controlType="editbox" builderStep="1" />
+                <Param key="#AllowDuplicateTrades#" name="Allow Duplicate Trades" type="boolean" defaultValue="false" displayOnDefault="false" controlType="booleanVar" help="If set to true, it will allow to place multiple trades with the same Magic Number" builderStep="1">false</Param>
+                <Param key="#ExitAfterBars.ExitAfterBars#" name="Exit After Bars" type="int" defaultValue="0" displayOnDefault="false" controlType="jspinnerVar" minValue="0" maxValue="99999" step="1" help="Number of bars after which this trade will automatically be closed" exitMethod="true" builderMinValue="5" builderMaxValue="500" builderStep="1">0</Param>
+                <Param key="#MoveSL2BE.MoveSL2BE#" name="Move SL to BE" type="double" isFormula="true" defaultValue="SQ.Formulas.RangeLevel.None" displayOnDefault="false" controlType="RangeLevel" help="Move StopLoss to Break Even" exitMethod="true" exitMethodType="SL">
+                  <Formula key="SQ.Formulas.RangeLevel.None" name="None" noneValue="true" />
+                </Param>
+                <Param key="#MoveSL2BE.SL2BEAddPips#" name="SL to BE - Add pips" type="double" isFormula="true" displayOnDefault="false" controlType="Range" exitMethod="true" dependentOn="MoveSL2BE.MoveSL2BE" exitMethodType="SL">
+                  <Formula key="SQ.Formulas.Range.None" name="None" noneValue="true" />
+                </Param>
+                <Param key="#ProfitTarget.ProfitTarget#" name="Profit Target" type="double" isFormula="true" displayOnDefault="false" controlType="SLPT" exitMethod="true" exitMethodType="PT">
+                  <Formula key="SQ.Formulas.SLPT.None" name="None" noneValue="true" />
+                </Param>
+                <Param key="#StopLoss.StopLoss#" name="Stop Loss" type="double" isFormula="true" displayOnDefault="false" controlType="SLPT" exitMethod="true" exitMethodType="SL">
+                  <Formula key="SQ.Formulas.SLPT.None" name="None" noneValue="true" />
+                </Param>
+                <Param key="#TrailingStop.TrailingStop#" name="Trailing Stop" type="double" isFormula="true" displayOnDefault="false" controlType="RangeLevel" exitMethod="true" exitMethodType="SL">
+                  <Formula key="SQ.Formulas.RangeLevel.None" name="None" noneValue="true" />
+                </Param>
+                <Param key="#TrailingStop.TrailingActivation#" name="TS Activation Level" type="double" isFormula="true" displayOnDefault="false" controlType="Range" exitMethod="true" dependentOn="TrailingStop.TrailingStop" exitMethodType="SL">
+                  <Formula key="SQ.Formulas.Range.None" name="None" noneValue="true" />
+                </Param>
+              </Item>
+            </Then>
+          </Rule>
+          <Rule type="IfThen" everyTick="false" name="Short entry" event="OnBarUpdate">
+            <Descriptions />
+            <If>
+              <Item key="AND">
+                <Block>
+                  <Item customSnippet="false" key="BooleanVariable" name="(BVAR) Boolean Variable" display="#Variable#" returnType="boolean" help="Boolean Variable" ignoreInBuilder="true" mI="Other" categoryType="other" notFirstValue="true" openingBrackets="0" closingBrackets="0">
+                    <Param key="#Variable#" name="Variable" type="boolean" defaultValue="10" controlType="comboVar" builderStep="1" variable="true" variableType="BOOLEAN">33333333-2222-1111-3333-333333333333</Param>
+                  </Item>
+                </Block>
+                <Block>
+                  <Item customSnippet="false" key="Not" name="Not" display="Not #Value#" returnType="boolean" mI="Comparisons" categoryType="operators" openingBrackets="0" closingBrackets="0">
+                    <Block key="#Value#" name="Value" type="value" controlType="value">
+                      <Item customSnippet="false" key="BooleanVariable" name="(BVAR) Boolean Variable" display="#Variable#" returnType="boolean" help="Boolean Variable" ignoreInBuilder="true" mI="Other" categoryType="other" notFirstValue="true">
+                        <Param key="#Variable#" name="Variable" type="boolean" defaultValue="10" controlType="comboVar" builderStep="1" variable="true" variableType="BOOLEAN">33333333-1111-1111-3333-333333333333</Param>
+                      </Item>
+                    </Block>
+                  </Item>
+                </Block>
+              </Item>
+            </If>
+            <Then>
+              <Item customSnippet="false" key="EnterReverseAtMarket" name="(MKT) Enter/reverse at market" display="Enter/ReverseAtMarket" returnType="order" help="Opens order at current market price&lt;br/&gt; If there already is existing order to an opposite direction, it closes it first." mI="Open" forEngine="*,-SP,-SA" categoryType="other" generated="random" randomId="RandomActionLong">
+                <Param key="#Symbol#" name="Symbol" type="string" defaultValue="Current" displayOnDefault="false" controlType="symbolVar" paramType="symbol" builderStep="1">Current</Param>
+                <Param key="#Direction#" name="Direction" type="int" defaultValue="1" controlType="combo" values="Long=1,Short=-1" builderStep="1" label="Short" generated="fixed">-1</Param>
+                <Param key="#Size#" name="Size" type="double" isFormula="true" controlType="Size" required="true">
+                  <Formula key="SQ.Formulas.Size.UseGlobalMM" name="Use global Money Management" />
+                </Param>
+                <Param key="#MagicNumber#" name="Magic Number" type="int" defaultValue="MagicNumber" displayOnDefault="false" controlType="comboVar" help="Magic number is used to identify this trade, it should be unique for every trade you open." builderStep="1" variable="true" variableType="INT" generated="fixed">11111111-1111-1111-1111-111111111111</Param>
+                <Param key="#Comment#" name="Comment" type="string" defaultValue="" displayOnDefault="false" controlType="editbox" builderStep="1" />
+                <Param key="#AllowDuplicateTrades#" name="Allow Duplicate Trades" type="boolean" defaultValue="false" displayOnDefault="false" controlType="booleanVar" help="If set to true, it will allow to place multiple trades with the same Magic Number" builderStep="1">false</Param>
+                <Param key="#ExitAfterBars.ExitAfterBars#" name="Exit After Bars" type="int" defaultValue="0" displayOnDefault="false" controlType="jspinnerVar" minValue="0" maxValue="99999" step="1" help="Number of bars after which this trade will automatically be closed" exitMethod="true" builderMinValue="5" builderMaxValue="500" builderStep="1">0</Param>
+                <Param key="#MoveSL2BE.MoveSL2BE#" name="Move SL to BE" type="double" isFormula="true" defaultValue="SQ.Formulas.RangeLevel.None" displayOnDefault="false" controlType="RangeLevel" help="Move StopLoss to Break Even" exitMethod="true" exitMethodType="SL">
+                  <Formula key="SQ.Formulas.RangeLevel.None" name="None" noneValue="true" />
+                </Param>
+                <Param key="#MoveSL2BE.SL2BEAddPips#" name="SL to BE - Add pips" type="double" isFormula="true" displayOnDefault="false" controlType="Range" exitMethod="true" dependentOn="MoveSL2BE.MoveSL2BE" exitMethodType="SL">
+                  <Formula key="SQ.Formulas.Range.None" name="None" noneValue="true" />
+                </Param>
+                <Param key="#ProfitTarget.ProfitTarget#" name="Profit Target" type="double" isFormula="true" displayOnDefault="false" controlType="SLPT" exitMethod="true" exitMethodType="PT">
+                  <Formula key="SQ.Formulas.SLPT.None" name="None" noneValue="true" />
+                </Param>
+                <Param key="#StopLoss.StopLoss#" name="Stop Loss" type="double" isFormula="true" displayOnDefault="false" controlType="SLPT" exitMethod="true" exitMethodType="SL">
+                  <Formula key="SQ.Formulas.SLPT.None" name="None" noneValue="true" />
+                </Param>
+                <Param key="#TrailingStop.TrailingStop#" name="Trailing Stop" type="double" isFormula="true" displayOnDefault="false" controlType="RangeLevel" exitMethod="true" exitMethodType="SL">
+                  <Formula key="SQ.Formulas.RangeLevel.None" name="None" noneValue="true" />
+                </Param>
+                <Param key="#TrailingStop.TrailingActivation#" name="TS Activation Level" type="double" isFormula="true" displayOnDefault="false" controlType="Range" exitMethod="true" dependentOn="TrailingStop.TrailingStop" exitMethodType="SL">
+                  <Formula key="SQ.Formulas.Range.None" name="None" noneValue="true" />
+                </Param>
+              </Item>
+            </Then>
+          </Rule>
+          <Rule type="IfThen" everyTick="false" name="Long exit" event="OnBarUpdate">
+            <Descriptions />
+            <If>
+              <Item key="AND">
+                <Block>
+                  <Item key="AND">
+                    <Block>
+                      <Item customSnippet="false" key="BooleanVariable" name="(BVAR) Boolean Variable" display="#Variable#" returnType="boolean" help="Boolean Variable" ignoreInBuilder="true" mI="Other" categoryType="other" notFirstValue="true" openingBrackets="0" closingBrackets="0">
+                        <Param key="#Variable#" name="Variable" type="boolean" defaultValue="10" controlType="comboVar" builderStep="1" variable="true" variableType="BOOLEAN">33333333-1111-2222-3333-333333333333</Param>
+                      </Item>
+                    </Block>
+                    <Block>
+                      <Item customSnippet="false" key="Not" name="Not" display="Not #Value#" returnType="boolean" mI="Comparisons" categoryType="operators" openingBrackets="0" closingBrackets="0">
+                        <Block key="#Value#" name="Value" type="value" controlType="value">
+                          <Item customSnippet="false" key="BooleanVariable" name="(BVAR) Boolean Variable" display="#Variable#" returnType="boolean" help="Boolean Variable" ignoreInBuilder="true" mI="Other" categoryType="other" notFirstValue="true">
+                            <Param key="#Variable#" name="Variable" type="boolean" defaultValue="10" controlType="comboVar" builderStep="1" variable="true" variableType="BOOLEAN">33333333-1111-1111-3333-333333333333</Param>
+                          </Item>
+                        </Block>
+                      </Item>
+                    </Block>
+                  </Item>
+                </Block>
+                <Block>
+                  <Item customSnippet="false" key="MarketPositionIsLong" name="Market Position Is Long" display="Market Position(#Symbol#, #MagicNumber#, '#Comment#') is Long" returnType="boolean" help="Is triggered if the first identified live order that fits the criteria is Long. It doesn't consider pending orders." ignoreInBuilder="true" mI="StrategyControl" forEngine="*,-SP,-SA" categoryType="simpleRules" openingBrackets="0" closingBrackets="0">
+                    <Param key="#Symbol#" name="Symbol" type="string" defaultValue="Current" displayOnDefault="false" controlType="symbolVarWithAny" paramType="symbol" builderStep="1">Any</Param>
+                    <Param key="#MagicNumber#" name="Magic Number" type="int" defaultValue="MagicNumber" displayOnDefault="false" controlType="comboVarWithAny" help="Magic number that can identify the order." builderStep="1" variable="true" variableType="INT">11111111-1111-1111-1111-111111111111</Param>
+                    <Param key="#Comment#" name="Comment" type="string" defaultValue="" displayOnDefault="false" controlType="editbox" help="Comment can be also used to identify the order. In case of Comment, order matches if the order comments contains the text specified here." builderStep="1" />
+                  </Item>
+                </Block>
+              </Item>
+            </If>
+            <Then>
+              <Item customSnippet="false" key="CloseAllPositions" name="Close All Positions" returnType="none" help="Close all positions that fit the criteria" ignoreInBuilder="true" mI="Close" categoryType="other">
+                <Param key="#Symbol#" name="Symbol" type="string" defaultValue="Current" displayOnDefault="false" controlType="symbolVarWithAny" paramType="symbol" builderStep="1">Any</Param>
+                <Param key="#Direction#" name="Direction" type="int" defaultValue="0" displayOnDefault="false" controlType="combo" values="Long=1,Short=-1,Any=0" builderStep="1" label="Long">1</Param>
+                <Param key="#MagicNumber#" name="Magic Number" type="int" defaultValue="MagicNumber" displayOnDefault="false" controlType="comboVarWithAny" help="Magic number that can identify the order." builderStep="1" variable="true" variableType="INT">11111111-1111-1111-1111-111111111111</Param>
+                <Param key="#Comment#" name="Comment" type="string" defaultValue="" displayOnDefault="false" controlType="editbox" help="Comment can be also used to identify the order. In case of Comment, order matches if the order comments contains the text specified here." builderStep="1" />
+              </Item>
+            </Then>
+          </Rule>
+          <Rule type="IfThen" everyTick="false" name="Short exit" event="OnBarUpdate">
+            <Descriptions />
+            <If>
+              <Item key="AND">
+                <Block>
+                  <Item key="AND">
+                    <Block>
+                      <Item customSnippet="false" key="BooleanVariable" name="(BVAR) Boolean Variable" display="#Variable#" returnType="boolean" help="Boolean Variable" ignoreInBuilder="true" mI="Other" categoryType="other" notFirstValue="true" openingBrackets="0" closingBrackets="0">
+                        <Param key="#Variable#" name="Variable" type="boolean" defaultValue="10" controlType="comboVar" builderStep="1" variable="true" variableType="BOOLEAN">33333333-2222-2222-3333-333333333333</Param>
+                      </Item>
+                    </Block>
+                    <Block>
+                      <Item customSnippet="false" key="Not" name="Not" display="Not #Value#" returnType="boolean" mI="Comparisons" categoryType="operators" openingBrackets="0" closingBrackets="0">
+                        <Block key="#Value#" name="Value" type="value" controlType="value">
+                          <Item customSnippet="false" key="BooleanVariable" name="(BVAR) Boolean Variable" display="#Variable#" returnType="boolean" help="Boolean Variable" ignoreInBuilder="true" mI="Other" categoryType="other" notFirstValue="true">
+                            <Param key="#Variable#" name="Variable" type="boolean" defaultValue="10" controlType="comboVar" builderStep="1" variable="true" variableType="BOOLEAN">33333333-2222-1111-3333-333333333333</Param>
+                          </Item>
+                        </Block>
+                      </Item>
+                    </Block>
+                  </Item>
+                </Block>
+                <Block>
+                  <Item customSnippet="false" key="MarketPositionIsShort" name="Market Position Is Short" display="Market Position(#Symbol#, #MagicNumber#, '#Comment#') is Short" returnType="boolean" help="Is triggered if the first identified live order that fits the criteria is Short. It doesn't consider pending orders." ignoreInBuilder="true" mI="StrategyControl" forEngine="*,-SP,-SA" categoryType="simpleRules" openingBrackets="0" closingBrackets="0">
+                    <Param key="#Symbol#" name="Symbol" type="string" defaultValue="Current" displayOnDefault="false" controlType="symbolVarWithAny" paramType="symbol" builderStep="1">Any</Param>
+                    <Param key="#MagicNumber#" name="Magic Number" type="int" defaultValue="MagicNumber" displayOnDefault="false" controlType="comboVarWithAny" help="Magic number that can identify the order." builderStep="1" variable="true" variableType="INT">11111111-1111-1111-1111-111111111111</Param>
+                    <Param key="#Comment#" name="Comment" type="string" defaultValue="" displayOnDefault="false" controlType="editbox" help="Comment can be also used to identify the order. In case of Comment, order matches if the order comments contains the text specified here." builderStep="1" />
+                  </Item>
+                </Block>
+              </Item>
+            </If>
+            <Then>
+              <Item customSnippet="false" key="CloseAllPositions" name="Close All Positions" returnType="none" help="Close all positions that fit the criteria" ignoreInBuilder="true" mI="Close" categoryType="other">
+                <Param key="#Symbol#" name="Symbol" type="string" defaultValue="Current" displayOnDefault="false" controlType="symbolVarWithAny" paramType="symbol" builderStep="1">Any</Param>
+                <Param key="#Direction#" name="Direction" type="int" defaultValue="0" displayOnDefault="false" controlType="combo" values="Long=1,Short=-1,Any=0" builderStep="1" label="Short">-1</Param>
+                <Param key="#MagicNumber#" name="Magic Number" type="int" defaultValue="MagicNumber" displayOnDefault="false" controlType="comboVarWithAny" help="Magic number that can identify the order." builderStep="1" variable="true" variableType="INT">11111111-1111-1111-1111-111111111111</Param>
+                <Param key="#Comment#" name="Comment" type="string" defaultValue="" displayOnDefault="false" controlType="editbox" help="Comment can be also used to identify the order. In case of Comment, order matches if the order comments contains the text specified here." builderStep="1" />
+              </Item>
+            </Then>
+          </Rule>
+          <Rule type="IfThen" everyTick="false" name="Cierre diario 1545" event="OnBarUpdate">
+            <Descriptions />
+            <If>
+              <Item customSnippet="false" key="IsGreaterOrEqual" name="(&gt;=) Is greater or equal" display="#Left# &gt;= #Right#" returnType="boolean" mI="Comparisons" categoryType="operators" openingBrackets="0" closingBrackets="0">
+                <Block key="#Left#" name="Left" type="value" controlType="value">
+                  <Item customSnippet="false" key="BarTime" name="Bar Time" display="Time[#Shift#]" returnType="number" help="Time of given bar" ignoreInBuilder="true" mI="BarAndTime" forEngine="*,-SP,-SA" categoryType="other">
+                    <Param key="#Chart#" name="Chart" type="data" controlType="dataVar" defaultValue="0">0</Param>
+                    <Param key="#Shift#" name="Shift" type="int" defaultValue="1" controlType="jspinnerVar" minValue="0" maxValue="1000" genMinValue="-1000001" genMaxValue="-1000002" paramType="shift" step="1" builderStep="1">0</Param>
+                  </Item>
+                </Block>
+                <Block key="#Right#" name="Right" type="value" controlType="value">
+                  <Item customSnippet="false" key="Number" name="(NUM) Number" display="#Number#" returnType="number" help="Number constant" mI="Other" categoryType="other" notFirstValue="true">
+                    <Param key="#Number#" name="Number" type="double" defaultValue="1545" controlType="jspinner" minValue="-999999999" maxValue="999999999" step="1" builderStep="1">1545</Param>
+                  </Item>
+                </Block>
+              </Item>
+            </If>
+            <Then>
+              <Item customSnippet="false" key="CloseAllPositions" name="Close All Positions" returnType="none" help="Close all positions that fit the criteria" ignoreInBuilder="true" mI="Close" categoryType="other">
+                <Param key="#Symbol#" name="Symbol" type="string" defaultValue="Current" displayOnDefault="false" controlType="symbolVarWithAny" paramType="symbol" builderStep="1">Any</Param>
+                <Param key="#Direction#" name="Direction" type="int" defaultValue="0" displayOnDefault="false" controlType="combo" values="Long=1,Short=-1,Any=0" builderStep="1" label="Any">0</Param>
+                <Param key="#MagicNumber#" name="Magic Number" type="int" defaultValue="MagicNumber" displayOnDefault="false" controlType="comboVarWithAny" help="Magic number that can identify the order." builderStep="1" variable="true">11111111-1111-1111-1111-111111111111</Param>
+                <Param key="#Comment#" name="Comment" type="string" defaultValue="" displayOnDefault="false" controlType="editbox" help="Comment can be also used to identify the order." builderStep="1" />
+              </Item>
+            </Then>
+          </Rule>
+        </Event>
+        <Event key="OnDeinit" />
+      </Events>
+    </Rules>
+    <Variables>
+      <variable>
+        <id>11111111-1111-1111-1111-111111111111</id>
+        <name>MagicNumber</name>
+        <type>int</type>
+        <value>11111</value>
+        <makeExternal>true</makeExternal>
+      </variable>
+      <variable>
+        <id>33333333-1111-1111-3333-333333333333</id>
+        <name>LongEntrySignal</name>
+        <type>boolean</type>
+        <value>false</value>
+        <makeExternal>false</makeExternal>
+      </variable>
+      <variable>
+        <id>33333333-2222-1111-3333-333333333333</id>
+        <name>ShortEntrySignal</name>
+        <type>boolean</type>
+        <value>false</value>
+        <makeExternal>false</makeExternal>
+      </variable>
+      <variable>
+        <id>33333333-1111-2222-3333-333333333333</id>
+        <name>LongExitSignal</name>
+        <type>boolean</type>
+        <value>false</value>
+        <makeExternal>false</makeExternal>
+      </variable>
+      <variable>
+        <id>33333333-2222-2222-3333-333333333333</id>
+        <name>ShortExitSignal</name>
+        <type>boolean</type>
+        <value>false</value>
+        <makeExternal>false</makeExternal>
+      </variable>
+    </Variables>
+    <Datas>
+      <data>
+        <id>0</id>
+        <chart>Main chart</chart>
+        <symbol>NULL</symbol>
+        <timeFrame>0</timeFrame>
+        <ticksize>0.0001</ticksize>
+      </data>
+    </Datas>
+    <CustomBlocks />
+    <RandomGroups />
+  </Strategy>
+  <ATMs source="none" enable="false" />
+</StrategyFile>

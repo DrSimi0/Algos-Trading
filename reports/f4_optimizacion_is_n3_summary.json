@@ -1,0 +1,73 @@
+{
+  "strategy": "F4-Optimizacion -IS- N3",
+  "parameters": {
+    "contract_mode": "micro",
+    "use_session_demean": true,
+    "use_kalman": false,
+    "unify_beta_ols": true,
+    "max_coprime_nq": 7,
+    "allow_sub_baskets": true,
+    "dynamic_basket_ratio": true,
+    "s_open": 1.25,
+    "s_close": 0.25,
+    "s_stop": 3.25,
+    "k_calib": 390,
+    "min_calib_bars": 390,
+    "phi_dll": 0.6,
+    "psi_tmdd": 0.3,
+    "survival_floor": 105.0,
+    "time_decay_multiplier": 3.5,
+    "n_basket_max": 3,
+    "source_tz": "America/New_York",
+    "target_tz": "America/New_York"
+  },
+  "prop_evaluation": {
+    "status": "PASS",
+    "reason": "Profit Target Achieved",
+    "target_achieved_date": "2023-05-16 00:00:00-04:00",
+    "final_balance": 72150.03,
+    "net_profit": 22150.03,
+    "peak_equity": 72636.8,
+    "final_floor": 50000.0,
+    "total_days_evaluated": 717,
+    "early_stopping_disabled": true
+  },
+  "metrics": {
+    "Total Trades": 472,
+    "Winning Trades": 314,
+    "Losing Trades": 158,
+    "Win Rate (%)": 66.53,
+    "Gross Profit ($)": 50923.39,
+    "Gross Loss ($)": 28773.36,
+    "Profit Factor": 1.77,
+    "Net Profit ($)": 22150.03,
+    "Total Return (%)": 44.3,
+    "Annualized Return (%)": 15.57,
+    "Max Drawdown ($)": 1661.47,
+    "Sharpe Ratio (Daily 252d)": 2.91,
+    "Sharpe Ratio (Per Trade)": 0.2384,
+    "Sortino Ratio (Daily 252d)": 3.03,
+    "Exit Reasons": {
+      "TAKE_PROFIT": 266,
+      "EOD_FLAT": 84,
+      "TIME_DECAY": 63,
+      "STOP_LOSS": 59
+    }
+  },
+  "cointegration_audit": {
+    "bars_evaluated": 55314,
+    "valid_ou_count": 51822,
+    "valid_ou_pct": 93.69,
+    "adf_passed_count": 51810,
+    "adf_passed_pct": 99.98,
+    "tau_passed_count": 22429,
+    "tau_passed_pct": 43.28,
+    "both_passed_count": 22426,
+    "both_passed_pct": 43.28,
+    "mean_beta": 0.8556,
+    "min_beta": 0.6722,
+    "max_beta": 1.054,
+    "mean_tau_half_min": 18.2,
+    "mean_sigma_eq": 0.001035
+  }
+}

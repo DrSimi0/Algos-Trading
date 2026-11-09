@@ -1,133 +1,132 @@
-# TEST_INFRA — Arquitectura y Metodología de Verificación Automatizada E2E
+# TEST_INFRA — Arquitectura y Metodología de Verificación Automatizada E2E para Informes de Optimización
 
 ## 1. Misión y Filosofía de Pruebas
 
-El presente documento establece la filosofía, arquitectura y especificación metodológica de la infraestructura de pruebas automatizadas E2E implementada en `tests/test_math_strategies_verification.py`.
+El presente documento formaliza la filosofía, arquitectura metodológica y catálogo de especificaciones de la infraestructura de pruebas automatizadas E2E implementada en `tests/test_optimization_reports_verification.py`.
 
-El objetivo central de este sistema de verificación es auditar con rigor analítico, estático y semántico los 9 documentos de especificación matemática formal de estrategias cuantitativas para futuros CME (ES y NQ) generados en el directorio `reports/estrategias_matematicas/`.
+El objetivo central de este sistema de verificación es auditar con rigor analítico, estático y semántico los 9 documentos de propuesta de optimización matemática para futuros CME (ES, MES, NQ, MNQ) en cuentas de Prop Trading ($50k–$100k USD) ubicados en el directorio `reports/optimizaciones_estrategias/`:
+- `F1_optimizacion_market_intraday_momentum.md`
+- `F2_optimizacion_filtered_orb.md`
+- `F3_optimizacion_anchored_vwap_value_area.md`
+- `F4_optimizacion_cointegracion_ou.md`
+- `F5_optimizacion_order_flow_imbalance.md`
+- `F6_optimizacion_multi_level_ofi.md`
+- `F7_optimizacion_meta_labeling.md`
+- `F8_optimizacion_modelos_har_rv_j.md`
+- `F9_optimizacion_anomalias_temporales_vrp.md`
 
 ### Principios Rectores:
-1. **Auditoría Forense sin Concesiones**: Ninguna afirmación teórica se da por válida sin una prueba automatizada que certifique su presencia y consistencia formal.
-2. **Prohibición Terminante de Código (Zero-Code Integrity)**: Los documentos de entrega están concebidos como especificaciones matemáticas puras listas para ser provistas a chats especializados de implementación. Se prohíbe taxativamente la inclusión de código ejecutable, bloques cercados de lenguajes de programación (Python, C++, R, Bash, etc.) o scripts.
-3. **Erradicación de Indicadores Convencionales Descartados**: Vetar de forma absoluta el empleo de indicadores minoristas estándar (SMA o RSI convencional) o referencias empíricas preliminares que degraden la calidad institucional del marco cuantitativo.
-4. **Formalismo Matemático en LaTeX**: Cada variable, modelo de señal, regla de desinversión y criterio de dimensionamiento debe formularse mediante ecuaciones analíticas rigurosas en notación LaTeX ($ o $$).
-5. **Autocontención Modular (100% Standalone)**: Cada uno de los 9 documentos debe ser plenamente autosuficiente, permitiendo a cualquier operador o desarrollador transferir un archivo individual sin requerir dependencias externas ni otros documentos complementarios.
+1. **Auditoría Forense sin Concesiones (Zero-Facade Testing)**: Cada prueba evalúa invariantes matemáticas y forenses reales derivadas de las exploraciones de Milestone 0 y los requisitos contractuales de Prop Trading. No se admiten pruebas triviales o fachada que aprueben sin validar el contenido crítico.
+2. **Prohibición Terminante de Código (Zero-Code Integrity)**: Los documentos de entrega son especificaciones analíticas puras destinadas a chats de implementación externos. Se prohíbe de forma absoluta la inclusión de bloques cercados de código (```` ```python ````, ```` ```cpp ````, ```` ```sh ````, etc.) o sentencias ejecutables (`import`, `def`, `class`, `return`).
+3. **Erradicación de Indicadores Convencionales Descartados**: Vetar de forma rigurosa el empleo de medias móviles tradicionales (SMA) o RSI estándar como indicadores o señales activas. Únicamente se toleran menciones en declaraciones explícitas de exclusión o rúbricas de descarte.
+4. **Confinamiento Estricto In-Sample (IS 2023)**: Todas las optimizaciones deben sustentarse exclusivamente en las 20,280 barras de 5 minutos del año calendario 2023 (260 sesiones RTH). Los años 2024 (Out-of-Sample) y 2025 (Holdout) permanecen en cuarentena sellada e inviolable.
+5. **Formalismo Matemático en LaTeX y Reglas Prop Trading**: Exigir notación formal LaTeX ($ y $$), dominios unívocos ($\mathbb{R}, \mathbb{N}$) y unidades físicas (USD, pts, ticks), con límites estrictos de Daily Loss Limit ($DLL \le \$1,500$ USD) y Trailing Max Drawdown ($MTDD \le \$3,000$ USD).
+6. **Autocontención Modular (100% Standalone)**: Cada uno de los 9 documentos debe ser plenamente independiente y transferible sin dependencias cruzadas hacia otros reportes.
 
 ---
 
 ## 2. Arquitectura de Verificación en 4 Niveles (Tiers 1 a 4)
 
-La suite de pruebas `tests/test_math_strategies_verification.py` organiza sus 146 casos de prueba en 4 niveles jerárquicos ortogonales:
+La suite de pruebas `tests/test_optimization_reports_verification.py` organiza sus 158 casos de prueba en 4 niveles jerárquicos ortogonales:
 
 ```
 +-----------------------------------------------------------------------------------+
-|                        SUITE DE VERIFICACIÓN E2E (146 TESTS)                     |
+|               SUITE DE VERIFICACIÓN E2E DE REPORTES DE OPTIMIZACIÓN               |
+|                                   (158 TESTS)                                     |
 +-----------------------------------------------------------------------------------+
-                                         |
-         +-------------------------------+-------------------------------+
-         |                               |                               |
-         v                               v                               v
-+-------------------+           +-------------------+           +-------------------+
-|      TIER 1       |           |      TIER 2       |           |      TIER 3       |
-| Estructura y      |           | Restricciones     |           | Secciones         |
-| Modularidad       |           | Negativas         |           | Obligatorias      |
-| (20 tests)        |           | (27 tests)        |           | (54 tests)        |
-+-------------------+           +-------------------+           +-------------------+
-         |                               |                               |
-         +-------------------------------+-------------------------------+
-                                         |
-                                         v
-                                +-------------------+
-                                |      TIER 4       |
-                                | Rigor LaTeX y     |
-                                | Autocontención    |
-                                | (45 tests)        |
-                                +-------------------+
+                                          |
+         +--------------------------------+--------------------------------+
+         |                                |                                |
+         v                                v                                v
++-------------------+            +-------------------+            +-------------------+
+|      TIER 1       |            |      TIER 2       |            |      TIER 3       |
+| Existencia,       |            | Restricciones     |            | Formalismo        |
+| Modularidad y     |            | Negativas e IS    |            | Matemático y Prop |
+| Cero Código       |            | Confinamiento     |            | Trading Risk      |
+| (55 tests)        |            | (27 tests)        |            | (63 tests)        |
++-------------------+            +-------------------+            +-------------------+
+         |                                |                                |
+         +--------------------------------+--------------------------------+
+                                          |
+                                          v
+                                 +-------------------+
+                                 |      TIER 4       |
+                                 | Requerimientos    |
+                                 | Profundos F3 y F4 |
+                                 | (+ Censo F1-F9)   |
+                                 | (13 tests)        |
+                                 +-------------------+
 ```
 
-### Tier 1: Estructura, Existencia de Entregables y Modularidad
-- **Objetivo**: Asegurar la existencia física, nomenclatura exacta y sustancialidad de cada entregable.
+### Tier 1: Existencia de Entregables, Modularidad y Cero Código
+- **Propósito**: Garantizar la integridad física, sustancialidad analítica y ausencia absoluta de código ejecutable.
 - **Validaciones**:
-  * `test_tier1_strategies_directory_exists`: Existencia y validez del directorio `reports/estrategias_matematicas/`.
-  * `test_tier1_all_nine_files_exist`: Presencia verificada de los 9 archivos con nombres exactos (`F1` a `F9`).
-  * `test_tier1_files_non_empty_and_substantial`: Umbral mínimo de profundidad analítica ($\ge 80$ líneas y $\ge 2,500$ bytes por archivo).
-  * `test_tier1_exact_deliverables_catalog`: Integridad del conjunto sin ausencias ni archivos parásitos.
+  * `test_all_nine_optimization_files_exist`: Existencia confirmada de los 9 archivos en `reports/optimizaciones_estrategias/`.
+  * `test_files_are_substantial_and_comprehensive`: Cada archivo debe tener al menos 15,000 bytes y 200 líneas.
+  * `test_mandatory_structural_sections_present`: Presencia de las 7 secciones obligatorias (Resumen, Diagnóstico IS, Formulación Matemática, Control de Riesgo Prop Trading, Impacto Cuantitativo, Rúbrica 8 Puntos R1-R8, Guía de Transferencia).
+  * `test_zero_fenced_programming_code_blocks`: Inspección estática línea por línea; cero tolerancia a bloques cercados (```` ``` ````).
+  * `test_zero_executable_programming_keywords`: Ausencia de directivas de lenguajes (`import`, `from`, `def`, `class`, `return`, `cout`, `console.log`).
+  * `test_standalone_modularity_no_unresolved_cross_dependencies`: Cero referencias cruzadas no resueltas entre estrategias.
 
-### Tier 2: Restricciones Negativas Estrictas e Integridad Analítica
-- **Objetivo**: Blindar el marco teórico contra contaminaciones de código y métricas minoristas descartadas.
+### Tier 2: Indicadores Descartados y Confinamiento In-Sample
+- **Propósito**: Blindar el marco teórico contra heurísticas minoristas y sobreajuste por fuga de datos futuros.
 - **Validaciones**:
-  * `test_tier2_strict_no_programming_code_blocks`: Inspección de bloques cercados (```python, ```cpp, ```sh, etc.). Cero tolerancia a bloques ejecutables.
-  * `test_tier2_strict_no_executable_programming_keywords`: Detección estática de directivas de lenguajes (`import numpy`, `def `, `class `, `pip install`, `cout <<`, etc.).
-  * `test_tier2_strict_no_traditional_retail_indicators`: Detección y veto estricto de SMA y RSI convencional como señales o indicadores activos, permitiendo únicamente menciones en declaraciones explícitas de descarte o tablas de auditoría.
+  * `test_zero_active_use_of_sma_or_standard_rsi`: Veto al uso activo de SMA o RSI; permitidas solo en cláusulas explícitas de exclusión.
+  * `test_explicit_in_sample_2023_certification`: Certificación explícita de fundamentación en el año 2023 (In-Sample).
+  * `test_quarantine_of_out_of_sample_2024_and_holdout_2025`: Cuarentena inviolable de 2024 (OOS) y 2025 (Holdout); cero calibración ni uso de datos futuros.
 
-### Tier 3: Secciones Obligatorias y Especificación Formal por Estrategia
-- **Objetivo**: Auditar la completitud estructural y teórica exigida en `ORIGINAL_REQUEST.md` y `PROJECT.md`.
+### Tier 3: Formalismo Matemático y Límites de Riesgo Prop Trading
+- **Propósito**: Verificar la densidad analítica y el cumplimiento de las reglas contractuales institucionales.
 - **Validaciones**:
-  * `test_tier3_all_mandatory_sections_present`: Existencia de las 5 secciones obligatorias:
-    1. Variables y Espacio de Estados
-    2. Ecuaciones de Señal
-    3. Ecuaciones de Salida y Time-Decay
-    4. Dimensionamiento de Posición y Control de Riesgo Prop Trading
-    5. Rúbrica de Verificación Analítica Objetiva
-  * `test_tier3_prop_trading_risk_components`: Verificación explícita de los 3 componentes contractuales de Prop Trading: Límite de Pérdida Diaria ($DLL$), Trailing Max Drawdown ($MTDD$) y escalado modular por volatilidad / distancia de riesgo.
-  * `test_tier3_variable_domains_and_units_specified`: Especificación unívoca de dominios matemáticos ($\mathbb{R}$, $\mathbb{N}$, $[a, b]$, $\in$) y unidades físicas de futuros (USD, ticks, puntos, contratos).
-  * `test_tier3_signal_equations_formalism`: Formulación analítica de señales para condiciones Long, Short y Neutral.
-  * `test_tier3_exit_equations_formalism`: Ecuaciones formales de salida con Take Profit (o captura de beneficio), Stop Loss matemático y Time-Decay / salida terminal.
-  * `test_tier3_strategy_specific_foundations`: Citas de autores académicos canónicos, conceptos teóricos distintivos y ecuaciones representativas de cada modelo (F1 a F9).
+  * `test_latex_equation_density_and_delimiters`: Alta densidad matemática ($\ge 4$ ecuaciones display `$$` o $\ge 20$ inline `$`) y balance sintáctico.
+  * `test_variable_domains_and_physical_units_specified`: Especificación unívoca de dominios ($\mathbb{R}, \mathbb{N}, \in$) y unidades físicas (USD, pts, ticks, sec, contratos).
+  * `test_daily_loss_limit_equations_bounded_below_1500`: Ecuaciones formales de Daily Loss Limit ($DLL \le \$1,500$ USD).
+  * `test_trailing_max_drawdown_equations_bounded_below_3000`: Ecuaciones formales de Trailing Max Drawdown ($MTDD \le \$3,000$ USD).
+  * `test_inverse_volatility_and_risk_distance_scaling`: Dimensionamiento de posición inverso a la distancia de riesgo con función piso entera ($\lfloor \cdot \rfloor$).
+  * `test_geometric_streak_attenuation_and_capital_preservation`: Presupuesto de riesgo modulado geométricamente por racha de pérdidas ($\phi(K) \propto 2^{-\min(K, \dots)}$).
+  * `test_micro_contract_switching_and_cme_multipliers`: Parámetros contractuales CME (ES/MES, NQ/MNQ) y conmutación Standard/Micro.
+  * `test_mandatory_intraday_flat_liquidation`: Liquidación forzosa intradiaria/previa al clearing CME (15:15, 15:45, 15:50, 16:45 EST).
 
-### Tier 4: Rigor Formal LaTeX, Autocontención y Robustez
-- **Objetivo**: Evaluar la densidad matemática, balance sintáctico y modularidad 100% aislada.
+### Tier 4: Requerimientos Cuantitativos Profundos de F3, F4 y Censo F1-F9
+- **Propósito**: Auditar las soluciones a las fallas críticas descubiertas en Milestone 0.
 - **Validaciones**:
-  * `test_tier4_latex_equation_density`: Exigencia de alta densidad matemática ($\ge 4$ ecuaciones display `$$` o $\ge 15$ expresiones LaTeX totales).
-  * `test_tier4_latex_syntax_balance`: Verificación de consistencia y número par de delimitadores display `$$`.
-  * `test_tier4_self_contained_no_cross_file_dependencies`: Cero referencias dependientes no resueltas entre estrategias ("ver archivo F1", "como se definió en F2", etc.).
-  * `test_tier4_instrument_and_market_parameters_self_contained`: Definición autónoma de instrumentos CME (ES, NQ, MES o MNQ) y sus multiplicadores/ticks en cada documento.
-  * `test_tier4_objective_verification_rubric_completeness`: Auditoría de la tabla de rúbrica interna con verificación de los 4 ejes clave (cero código, exclusión SMA/RSI, condiciones analíticas y gestión de riesgo prop firm).
+  * `test_f3_monte_carlo_ruin_analysis_present`: Cuantificación de ruina base en Monte Carlo (70.36%-98.96%), teorema de Erdős-Rényi para longitud de rachas y arrastre de comisiones ($4,132 vs -$455 USD).
+  * `test_f3_closed_form_mathematical_resolution`: Formulación cerrada de pendiente normalizada de VWAP ($\kappa_{norm} \le 0.085$), compuerta de Área de Valor ($\Phi_{AMT}$), bandas asimétricas por sesgo, Trailing Protect SL y certificación de supervivencia MC $\ge 95\%$.
+  * `test_f4_forensic_audit_six_causes_of_anomaly`: Auditoría forense exhaustiva de las 6 causas de la anomalía PF 9.13 / Sharpe 14.76 (parada temprana en día 28 / barra 1,794, error $\sqrt{252}$ en Sharpe sobre trades, ejecución contemporánea en Close, desbalance 1:1 de $52.5k USD, brechas nocturnas, fricción multileg).
+  * `test_f4_corrected_ornstein_uhlenbeck_diffusion`: Ecuaciones corregidas de Ornstein-Uhlenbeck ($\kappa, \theta, \sigma_{eq}, \tau_{1/2}$).
+  * `test_f4_micro_dollar_beta_sub_baskets`: Sub-cestas micro Dollar-Beta con ratio continuo coprimo y riesgo acotado ($\le \$100$ USD).
+  * `test_f4_realistic_performance_envelope`: Envolvente de rendimiento realista (Sharpe 1.5–2.3, PF 1.6–2.2, Win Rate 58%–66%).
+  * `test_f1_to_f9_optimizations_coverage`: Soluciones específicas auditadas en F1, F2, F5, F6, F7, F8 y F9.
 
 ---
 
-## 3. Catálogo de Estrategias y Mapeo Canónico (F1 a F9)
-
-| ID | Archivo Canónico | Título y Autores Clave | Núcleo Analítico |
-|---|---|---|---|
-| **F1** | `F1_market_intraday_momentum.md` | Market Intraday Momentum (Gao et al., Bogousslavsky) | Retorno matutino $r_{first, t}$, filtro RVOL institucional, umbral por volatilidad $\sigma_{daily, t}$, salida MOC $15:58$ EST. |
-| **F2** | `F2_filtered_orb.md` | Filtered Quantitative ORB (Crabel, Zarattini et al.) | ORB 15-min, compresión NR4/Inside Day, filtro $RVOL \ge 1.8$, amortiguador Stretch, invalidación en punto medio del rango. |
-| **F3** | `F3_anchored_vwap_value_area.md` | Anchored VWAP & Value Area (Madhavan, Gatheral, Steidlmayer) | Bandas $\pm 2\sigma$ ancladas, Auction Market Theory (VAH, VAL, POC), filtro de régimen ADX $< 25$, reversión a la media rotacional. |
-| **F4** | `F4_cointegracion_es_nq_ornstein_uhlenbeck.md` | Cointegración ES vs NQ / O-U (Avellaneda & Lee, Hasbrouck) | Difusión de Ornstein-Uhlenbeck sobre spread residual, S-score, vida media $\tau_{1/2}$, cobertura Dollar-Beta Neutral (10 MNQ vs 17 MES). |
-| **F5** | `F5_order_flow_imbalance_cont.md` | Order Flow Imbalance Cont et al. (Cont, Kukanov & Stoikov) | OFI Nivel 1, función de impacto de flujo discreto $e_n$, variaciones de profundidad bid/ask $\Delta q$, Z-score rodante. |
-| **F6** | `F6_multi_level_ofi.md` | Multi-Level OFI (Xu, Gould & Howison) | Desequilibrio multiescala $OFI^{(k)}$, decaimiento espacial de potencias $k^{-\alpha}$, descomposición PCA espectral, índice $\Phi_{coherence}$. |
-| **F7** | `F7_meta_labeling_triple_barrier.md` | Meta-Labeling & Triple Barrier (López de Prado) | Clasificador primario desacoplado de meta-modelo probabilístico $P(y=1|x)$, bet sizing continuo, geometría dinámica de triple barrera. |
-| **F8** | `F8_modelos_econometricos_har_rv_j.md` | Modelos Econométricos HAR-RV-J (Corsi, Andersen et al., Moreira & Muir) | Descomposición continua y de saltos mediante Bipower Variation ($BV_t$), componentes diario, semanal y mensual, escalado inverso $1/\sigma$. |
-| **F9** | `F9_anomalias_temporales_vrp.md` | Anomalías Temporales & VRP (Bollerslev et al., Boyarchenko et al., Kurov et al.) | Variance Risk Premium $IV^2 - RV^2$, captura de deriva nocturna (01:30–08:30 EST), salida macro obligatoria en $T-3$ min (previa a embargo). |
-
----
-
-## 4. Comandos de Ejecución y Diagnóstico
+## 3. Comandos de Ejecución y Diagnóstico
 
 Para ejecutar la suite de verificación automatizada:
 
 ```powershell
 # Ejecución completa con reporte detallado
-python -m pytest tests/test_math_strategies_verification.py -v
+python -m pytest tests/test_optimization_reports_verification.py -v
 
 # Ejecución concisa con resumen de fallos
-python -m pytest tests/test_math_strategies_verification.py -q
+python -m pytest tests/test_optimization_reports_verification.py -q
 
 # Ejecución focalizada por Tier específico
-python -m pytest tests/test_math_strategies_verification.py -k "TestTier1" -v
-python -m pytest tests/test_math_strategies_verification.py -k "TestTier2" -v
-python -m pytest tests/test_math_strategies_verification.py -k "TestTier3" -v
-python -m pytest tests/test_math_strategies_verification.py -k "TestTier4" -v
+python -m pytest tests/test_optimization_reports_verification.py -k "TestTier1" -v
+python -m pytest tests/test_optimization_reports_verification.py -k "TestTier2" -v
+python -m pytest tests/test_optimization_reports_verification.py -k "TestTier3" -v
+python -m pytest tests/test_optimization_reports_verification.py -k "TestTier4" -v
 
-# Ejecución focalizada sobre una estrategia individual (ejemplo F4)
-python -m pytest tests/test_math_strategies_verification.py -k "F4" -v
+# Ejecución focalizada sobre F3 o F4
+python -m pytest tests/test_optimization_reports_verification.py -k "f3" -v
+python -m pytest tests/test_optimization_reports_verification.py -k "f4" -v
 ```
 
 ---
 
-## 5. Protocolo de Escalación de Defectos
+## 4. Protocolo de Escalación de Defectos para Milestone 2
 
-En cumplimiento con el rol de **Test Writer / QA Specialist**:
-1. Los agentes de pruebas **únicamente modifican código de pruebas** (`tests/test_math_strategies_verification.py` y artefactos de documentación de pruebas).
-2. Si un documento viola una restricción formal (ejemplo: presencia de bloque de código o ausencia de una sección obligatoria), el test fallará de manera estricta y el fallo será **escalado al agente redactor / worker** responsable mediante un reporte descriptivo.
-3. No se toleran pruebas fachada (*facade tests*) que pasen sin verificar la verdadera consistencia matemática ni pruebas diseñadas ad-hoc para ocultar omisiones en los documentos.
+En estricto cumplimiento del rol de **Test Writer / QA Specialist**:
+1. El Test Writer **únicamente modifica código de pruebas** (`tests/test_optimization_reports_verification.py`) y documentación de infraestructura de pruebas (`TEST_INFRA.md`, `TEST_READY.md`).
+2. Los fallos detectados en Tier 4 constituyen la **lista oficial de defectos y requerimientos de enriquecimiento** que el Worker de Milestone 2 (`teamwork_worker_opt_m2`) debe consolidar en `reports/optimizaciones_estrategias/F3_optimizacion_anchored_vwap_value_area.md` y `F4_optimizacion_cointegracion_ou.md`.
+3. Una vez que el Worker de M2 complete la consolidación e integración de los hallazgos cuantitativos de Milestone 0, la suite debe ejecutarse nuevamente hasta alcanzar **158 PASSED / 0 FAILED (100% de aprobación)** antes del paso a la compuerta de auditoría forense (Milestone 3).

@@ -23,6 +23,10 @@ from src.strategies.momentum.intraday_momentum_moc import (
     MarketIntradayMomentumMOC,
     IntradayMomentumBacktester,
 )
+from src.strategies.momentum.f1_optimizacion_is_n1 import (
+    MarketIntradayMomentumOptN1,
+    IntradayMomentumOptN1Backtester,
+)
 from src.portfolio.prop_firm_rules import PROFILES
 from src.core.data_split import add_data_split_args, partition_from_args
 
@@ -95,12 +99,21 @@ def parse_arguments() -> argparse.Namespace:
         default=None,
         help="Ruta a archivo de datos personalizado (parquet o csv)"
     )
+    parser.add_argument(
+        "--version",
+        "--model",
+        dest="version",
+        type=str,
+        default="original",
+        choices=["original", "opt_n1", "F1-Optimizacion-IS-N1"],
+        help="Versión de estrategia a evaluar: 'original' o 'opt_n1' / 'F1-Optimizacion-IS-N1' (def: original)"
+    )
     add_data_split_args(parser)
     return parser.parse_args()
 
 
 def load_market_data(symbol: str, interval: str, custom_path: str = None) -> pd.DataFrame:
-    """Carga los datos intradía disponibles en data/raw (prioriza dataset de 3 años)."""
+    """Carga los datos intradía disponibles en data/raw (prioriza series reales CME 2021-2023)."""
     if custom_path:
         p = Path(custom_path)
         if p.suffix == ".parquet":
@@ -116,6 +129,8 @@ def load_market_data(symbol: str, interval: str, custom_path: str = None) -> pd.
 
     data_dir = ROOT_DIR / "data" / "raw"
     candidates = [
+        data_dir / f"CME_MINI_{underlying}_2021_2023_{interval}.parquet",
+        data_dir / f"CME_MINI_{underlying}_2021_2023_{interval}.csv",
         data_dir / f"CME_MINI_{underlying}_{interval}_3y.parquet",
         data_dir / f"CME_MINI_{underlying}_{interval}_3y.csv",
         data_dir / f"CME_MINI_{underlying}_{interval}_bars5000.parquet",
@@ -130,7 +145,7 @@ def load_market_data(symbol: str, interval: str, custom_path: str = None) -> pd.
 
     raise FileNotFoundError(
         f"No se encontraron datos históricos para {underlying} ({interval}) en {data_dir}.\n"
-        f"Ejecute previamente: python scripts/generate_synthetic_futures_3y.py"
+        f"Verifique la existencia de datos reales CME Globex (ej: CME_MINI_ES_2021_2023_5m.parquet)."
     )
 
     # Validar formato de columnas
@@ -168,10 +183,14 @@ def main():
 
     dll_str = f"${daily_loss_limit:,.2f} USD" if daily_loss_limit is not None else "N/A (Sin límite diario)"
 
+    is_opt = args.version in ["opt_n1", "F1-Optimizacion-IS-N1"]
+    model_title = "F1-OPTIMIZACION -IS- N1" if is_opt else "ESTRATEGIA F1 - MARKET INTRADAY MOMENTUM & MOC"
+
     print("=" * 80)
-    print(" MOTOR DE BACKTEST CUANTITATIVO: ESTRATEGIA F1 - MARKET INTRADAY MOMENTUM & MOC")
+    print(f" MOTOR DE BACKTEST CUANTITATIVO: {model_title}")
     print(" Fundamento: Gao, Han, Li, & Zhou (2018, JFE) | Bogousslavsky (2021, JFE)")
     print("=" * 80)
+    print(f" Versión de Modelo:        {'F1-Optimizacion -IS- N1' if is_opt else 'Original (Base)'}")
     print(f" Instrumento:              {std_symbol} (Estándar) / {micro_symbol} (Micro)")
     print(f" Intervalo:                {args.interval}")
     print(f" Capital Inicial:          ${account_size:,.2f} USD")
@@ -185,30 +204,48 @@ def main():
     # 1. Cargar datos
     print(f"\n [1/3] Cargando datos de mercado...")
     df = load_market_data(std_symbol, args.interval, custom_path=args.data)
-    df, part_label = partition_from_args(df, args, "F1_Momentum_MOC")
+    part_name = "F1_Optimizacion_IS_N1" if is_opt else "F1_Momentum_MOC"
+    df, part_label = partition_from_args(df, args, part_name)
     start_dt = df.index.min().strftime("%Y-%m-%d %H:%M")
     end_dt = df.index.max().strftime("%Y-%m-%d %H:%M")
     print(f"       -> {len(df):,} barras cargadas desde {start_dt} hasta {end_dt}.")
 
     # 2. Configurar estrategia y simulador
-    print(f"\n [2/3] Inicializando estrategia F1 y simulador de Prop Trading...")
-    strategy = MarketIntradayMomentumMOC(params={
-        "symbol": std_symbol,
-        "std_symbol": std_symbol,
-        "micro_symbol": micro_symbol,
-        "source_tz": "America/Mexico_City",  # Convierte datos locales UTC-6 a America/New_York
-        "target_tz": "America/New_York",
-    })
-
-    backtester = IntradayMomentumBacktester(
-        strategy=strategy,
-        account_size=account_size,
-        daily_loss_limit=daily_loss_limit,
-        max_trailing_loss=max_trailing_loss,
-        trailing_mode=trailing_mode,
-        lock_floor_at_start=lock_floor_at_start,
-        profit_target=profit_target,
-    )
+    print(f"\n [2/3] Inicializando {'F1-Optimizacion -IS- N1' if is_opt else 'estrategia F1 original'} y simulador...")
+    if is_opt:
+        strategy = MarketIntradayMomentumOptN1(params={
+            "symbol": std_symbol,
+            "std_symbol": std_symbol,
+            "micro_symbol": micro_symbol,
+            "source_tz": "America/Mexico_City",
+            "target_tz": "America/New_York",
+        })
+        backtester = IntradayMomentumOptN1Backtester(
+            strategy=strategy,
+            account_size=account_size,
+            daily_loss_limit=daily_loss_limit,
+            max_trailing_loss=max_trailing_loss,
+            trailing_mode=trailing_mode,
+            lock_floor_at_start=lock_floor_at_start,
+            profit_target=profit_target,
+        )
+    else:
+        strategy = MarketIntradayMomentumMOC(params={
+            "symbol": std_symbol,
+            "std_symbol": std_symbol,
+            "micro_symbol": micro_symbol,
+            "source_tz": "America/Mexico_City",
+            "target_tz": "America/New_York",
+        })
+        backtester = IntradayMomentumBacktester(
+            strategy=strategy,
+            account_size=account_size,
+            daily_loss_limit=daily_loss_limit,
+            max_trailing_loss=max_trailing_loss,
+            trailing_mode=trailing_mode,
+            lock_floor_at_start=lock_floor_at_start,
+            profit_target=profit_target,
+        )
 
     # 3. Ejecutar simulación
     print(f"\n [3/3] Ejecutando simulación sesión a sesión con reglas institucionales CME...")

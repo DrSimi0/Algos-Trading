@@ -100,9 +100,11 @@ def main():
     }
     std_sym, micro_sym = pair_map[args.symbol]
 
-    # Resolver rutas por defecto (prioriza dataset de 3 años)
+    # Resolver rutas por defecto (prioriza dataset canónico 2021-2023 CME Globex)
     if args.data is None:
         candidates_3y = [
+            f"data/raw/CME_MINI_{std_sym}_2021_2023_5m.parquet",
+            f"data/raw/CME_MINI_{std_sym}_2021_2023_5m.csv",
             f"data/raw/CME_MINI_{std_sym}_5m_3y.parquet",
             f"data/raw/CME_MINI_{std_sym}_5m_3y.csv",
             f"data/raw/CME_MINI_{std_sym}_5m_bars5000.parquet",
@@ -117,6 +119,8 @@ def main():
 
     if args.daily_data is None:
         daily_candidates = [
+            f"data/raw/CME_MINI_{std_sym}_2021_2023_1d.parquet",
+            f"data/raw/CME_MINI_{std_sym}_2021_2023_1d.csv",
             f"data/raw/CME_MINI_{std_sym}_1d_3y.parquet",
             f"data/raw/CME_MINI_{std_sym}_1d_3y.csv",
             f"data/raw/CME_MINI_{std_sym}_1d_bars5000.parquet",

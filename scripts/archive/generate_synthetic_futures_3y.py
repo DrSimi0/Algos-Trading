@@ -1,13 +1,10 @@
 """
-scripts/generate_synthetic_futures_3y.py
+scripts/archive/generate_synthetic_futures_3y.py
+[DEPRECATED / ARCHIVED - PROHIBIDO PARA CALIBRACIÓN]
 Generador determinista de datos sintéticos de futuros CME (ES y NQ) para 3 años completos (2023, 2024, 2025).
-Cubre:
-- Año 1 (2023): In-Sample (Régimen Tendencial Alcista y Volatilidad Moderada ~13%).
-- Año 2 (2024): Out-of-Sample (Régimen de Expansión de Volatilidad ~18% y Shocks Macro).
-- Año 3 (2025): Holdout Ciego (Régimen Lateral / Compresión de Rango ~12%).
-
-Garantiza cointegración sintética entre ES y NQ para soportar la estrategia F4.
-Genera tanto series intradía de 5 minutos como agregaciones diarias (1d).
+Este script ha sido archivado en cumplimiento con la Regla 6 de REGLAS_BACKTESTING_Y_ANTI_CONTAMINACION.md.
+Queda terminantemente prohibido calibrar estrategias sobre series simuladas con fórmulas ad-hoc.
+Toda calibración debe realizarse exclusivamente sobre datos históricos reales de CME Globex.
 """
 
 from pathlib import Path

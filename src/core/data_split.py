@@ -101,17 +101,18 @@ class DataSplitManager:
         if self.split_years is not None:
             years = self.data.index.year
             y_is, y_oos, y_hold = self.split_years
-            df_is = self.data[years == y_is]
+            # En series históricas consolidadas (ej. CME Globex 2021-2023), el periodo In-Sample
+            # cubre todos los años históricos hasta y_is inclusive (2021, 2022, 2023), sin descartar
+            # los años previos 2021 y 2022. OOS (y_oos) y Holdout (y_hold) permanecen estrictamente confinados.
+            df_is = self.data[years <= y_is]
             df_oos = self.data[years == y_oos]
             df_holdout = self.data[years == y_hold]
-            available = sorted(set(years))
-            for label, df_part, year in (("In-Sample", df_is, y_is), ("Out-of-Sample", df_oos, y_oos),
-                                         ("Holdout", df_holdout, y_hold)):
-                if df_part.empty:
-                    raise ValueError(
-                        f"No hay datos para el año {year} ({label}). Años disponibles en el dataset: {available}. "
-                        "Genera/importa 3 años de datos (ver scripts/generate_synthetic_futures_3y.py)."
-                    )
+            if df_is.empty:
+                available = sorted(set(years))
+                raise ValueError(
+                    f"No hay datos para el periodo In-Sample (<= {y_is}). Años disponibles en el dataset: {available}. "
+                    "Importe datos históricos reales de mercado CME Globex (ver data/raw/CME_MINI_ES_2021_2023_5m.parquet)."
+                )
             return df_is, df_oos, df_holdout
 
         # Opción 1: Rangos explícitos
@@ -158,26 +159,22 @@ class DataSplitManager:
         """Verifica que no exista ninguna fuga ni solapamiento entre IS, OOS y Holdout."""
         if self._in_sample.empty:
             raise ValueError("El periodo In-Sample está vacío.")
-        if self._out_of_sample.empty:
-            raise ValueError("El periodo Out-of-Sample está vacío.")
-        if self._holdout.empty:
-            raise ValueError("El periodo Holdout Ciego está vacío.")
 
-        max_is = self._in_sample.index.max()
-        min_oos = self._out_of_sample.index.min()
-        max_oos = self._out_of_sample.index.max()
-        min_holdout = self._holdout.index.min()
+        if not self._out_of_sample.empty:
+            max_is = self._in_sample.index.max()
+            min_oos = self._out_of_sample.index.min()
+            if max_is >= min_oos:
+                raise ValueError(f"Fuga temporal IS -> OOS detectada: {max_is} >= {min_oos}")
+            if len(self._in_sample.index.intersection(self._out_of_sample.index)) > 0:
+                raise ValueError("Fuga detectada: Intersección no vacía entre IS y OOS.")
 
-        if max_is >= min_oos:
-            raise ValueError(f"Fuga temporal IS -> OOS detectada: {max_is} >= {min_oos}")
-        if max_oos >= min_holdout:
-            raise ValueError(f"Fuga temporal OOS -> Holdout detectada: {max_oos} >= {min_holdout}")
-
-        # Comprobar intersecciones vacías
-        if len(self._in_sample.index.intersection(self._out_of_sample.index)) > 0:
-            raise ValueError("Fuga detectada: Intersección no vacía entre IS y OOS.")
-        if len(self._out_of_sample.index.intersection(self._holdout.index)) > 0:
-            raise ValueError("Fuga detectada: Intersección no vacía entre OOS y Holdout.")
+        if not self._holdout.empty and not self._out_of_sample.empty:
+            max_oos = self._out_of_sample.index.max()
+            min_holdout = self._holdout.index.min()
+            if max_oos >= min_holdout:
+                raise ValueError(f"Fuga temporal OOS -> Holdout detectada: {max_oos} >= {min_holdout}")
+            if len(self._out_of_sample.index.intersection(self._holdout.index)) > 0:
+                raise ValueError("Fuga detectada: Intersección no vacía entre OOS y Holdout.")
 
     def get_in_sample(self) -> pd.DataFrame:
         """Retorna el subconjunto In-Sample libre para desarrollo y optimización."""
@@ -189,12 +186,32 @@ class DataSplitManager:
         Requiere autorización explícita tras auditar In-Sample.
         """
         if not authorized:
+            range_info = (
+                f"{self._out_of_sample.index[0].date()} a {self._out_of_sample.index[-1].date()} ({len(self._out_of_sample)} barras)"
+                if not self._out_of_sample.empty else "Sellado en bóveda criptográfica data/vault/oos_2024_5m.enc"
+            )
+            try:
+                from src.core.vault_security import record_tripwire_event
+                record_tripwire_event("UNAUTHORIZED_OOS_ACCESS_ATTEMPT", f"Intento no autorizado a OOS ({range_info})")
+            except Exception:
+                pass
             raise SecurityGateError(
                 "\n[ACCESO BLOQUEADO - CUARENTENA NIVEL 1: OUT-OF-SAMPLE]\n"
                 "El periodo Out-of-Sample está protegido para prevenir sobreajuste.\n"
                 "Para desbloquearlo, debes otorgar tu Visto Bueno explícito (--approve-oos).\n"
-                f"Rango OOS: {self._out_of_sample.index[0].date()} a {self._out_of_sample.index[-1].date()} "
-                f"({len(self._out_of_sample)} barras)."
+                f"Rango OOS: {range_info}."
+            )
+
+        if self._out_of_sample.empty:
+            try:
+                from src.core.vault_security import record_tripwire_event
+                record_tripwire_event("VAULTED_OOS_BLOCKED", "Intento de leer OOS cuando los datos están protegidos en bóveda")
+            except Exception:
+                pass
+            raise SecurityGateError(
+                "\n[ACCESO BLOQUEADO - DATOS PROTEGIDOS EN BÓVEDA CRIPTOGRÁFICA]\n"
+                "Los datos de 2024 (Out-of-Sample) están físicamente encriptados en data/vault/oos_2024_5m.enc.\n"
+                "Para desbloquearlos en RAM, utiliza el runner del orquestador: run_multi_year_robustness_audit.py."
             )
 
         self._log_audit_access("OOS_UNLOCKED", reason, self._out_of_sample)
@@ -206,13 +223,33 @@ class DataSplitManager:
         Solo debe abrirse como prueba de fuego final tras verificar que IS y OOS son consistentes.
         """
         if not authorized:
+            range_info = (
+                f"{self._holdout.index[0].date()} a {self._holdout.index[-1].date()} ({len(self._holdout)} barras)"
+                if not self._holdout.empty else "Sellado en bóveda criptográfica data/vault/holdout_2025_5m.enc"
+            )
+            try:
+                from src.core.vault_security import record_tripwire_event
+                record_tripwire_event("UNAUTHORIZED_HOLDOUT_ACCESS_ATTEMPT", f"Intento no autorizado a Holdout ({range_info})")
+            except Exception:
+                pass
             raise SecurityGateError(
                 "\n[ACCESO BLOQUEADO - CUARENTENA NIVEL 2: BÓVEDA CIEGA HOLDOUT]\n"
                 "Este conjunto de datos jamás ha sido visto por la estrategia.\n"
                 "Solo debe abrirse si In-Sample y Out-of-Sample han resultado positivos y aprobados.\n"
                 "Para desbloquearlo, debes otorgar la autorización definitiva (--approve-holdout).\n"
-                f"Rango Holdout: {self._holdout.index[0].date()} a {self._holdout.index[-1].date()} "
-                f"({len(self._holdout)} barras)."
+                f"Rango Holdout: {range_info}."
+            )
+
+        if self._holdout.empty:
+            try:
+                from src.core.vault_security import record_tripwire_event
+                record_tripwire_event("VAULTED_HOLDOUT_BLOCKED", "Intento de leer Holdout cuando los datos están protegidos en bóveda")
+            except Exception:
+                pass
+            raise SecurityGateError(
+                "\n[ACCESO BLOQUEADO - DATOS PROTEGIDOS EN BÓVEDA CRIPTOGRÁFICA]\n"
+                "Los datos de 2025 (Holdout) están físicamente encriptados en data/vault/holdout_2025_5m.enc.\n"
+                "Para desbloquearlos en RAM, utiliza el runner del orquestador: run_multi_year_robustness_audit.py."
             )
 
         self._log_audit_access("HOLDOUT_FINAL_UNLOCKED", reason, self._holdout)
@@ -223,7 +260,10 @@ class DataSplitManager:
         try:
             self.audit_log_path.parent.mkdir(parents=True, exist_ok=True)
             timestamp = datetime.now().isoformat()
-            r_range = f"{df.index[0].date()} a {df.index[-1].date()} ({len(df)} bars)"
+            if not df.empty:
+                r_range = f"{df.index[0].date()} a {df.index[-1].date()} ({len(df)} bars)"
+            else:
+                r_range = "0 bars (encrypted in vault)"
             log_entry = f"[{timestamp}] {event_type} | Reason: '{reason or 'N/A'}' | Range: {r_range}\n"
             with open(self.audit_log_path, "a", encoding="utf-8") as f:
                 f.write(log_entry)
@@ -237,19 +277,28 @@ class DataSplitManager:
         n_oos = len(self._out_of_sample)
         n_hold = len(self._holdout)
 
-        return {
+        summary = {
             "Total Bars": n_total,
             "Total Range": f"{self.data.index[0].date()} a {self.data.index[-1].date()}",
             "In-Sample Range": f"{self._in_sample.index[0].date()} a {self._in_sample.index[-1].date()}",
             "In-Sample Bars": n_is,
             "In-Sample %": round((n_is / n_total) * 100, 2),
-            "Out-of-Sample Range": f"{self._out_of_sample.index[0].date()} a {self._out_of_sample.index[-1].date()}",
-            "Out-of-Sample Bars": n_oos,
-            "Out-of-Sample %": round((n_oos / n_total) * 100, 2),
-            "Holdout Range": f"{self._holdout.index[0].date()} a {self._holdout.index[-1].date()}",
-            "Holdout Bars": n_hold,
-            "Holdout %": round((n_hold / n_total) * 100, 2),
         }
+        if n_oos > 0:
+            summary["Out-of-Sample Range"] = f"{self._out_of_sample.index[0].date()} a {self._out_of_sample.index[-1].date()}"
+            summary["Out-of-Sample Bars"] = n_oos
+            summary["Out-of-Sample %"] = round((n_oos / n_total) * 100, 2)
+        else:
+            summary["Out-of-Sample"] = "PROTEGIDO EN BÓVEDA (data/vault/oos_2024_5m.enc)"
+
+        if n_hold > 0:
+            summary["Holdout Range"] = f"{self._holdout.index[0].date()} a {self._holdout.index[-1].date()}"
+            summary["Holdout Bars"] = n_hold
+            summary["Holdout %"] = round((n_hold / n_total) * 100, 2)
+        else:
+            summary["Holdout"] = "PROTEGIDO EN BÓVEDA (data/vault/holdout_2025_5m.enc)"
+
+        return summary
 
 
 # =============================================================================
@@ -271,7 +320,7 @@ def add_data_split_args(parser: argparse.ArgumentParser, mode_arg_name: str = "-
     parser.add_argument("--approve-holdout", action="store_true", default=False,
                         help="Visto bueno explícito para desbloquear el Año 3 (Holdout Ciego)")
     parser.add_argument("--split-years", type=int, nargs=3, default=list(DEFAULT_SPLIT_YEARS),
-                        help="Años calendario [IS OOS Holdout] (defecto: 2023 2024 2025)")
+                        help="Años calendario [IS OOS Holdout] (defecto: 2023 2024 2025). En series consolidadas multi-anuales (ej: 2021-2023), In-Sample abarca todos los años históricos hasta IS inclusive.")
 
 
 def _deny(title: str, detail: str, flag: str) -> None:
@@ -317,6 +366,7 @@ def extract_partition_data(
 
 def partition_from_args(df: pd.DataFrame, args: argparse.Namespace, strategy_name: str) -> Tuple[pd.DataFrame, str]:
     """Atajo para runners: construye el DataSplitManager por años y extrae la partición activa."""
+    check_partition_authorization(args.split_mode, args.approve_oos, args.approve_holdout)
     split_mgr = DataSplitManager(df, split_years=args.split_years)
     df_part, label = extract_partition_data(
         split_mgr, args.split_mode, args.approve_oos, args.approve_holdout, strategy_name

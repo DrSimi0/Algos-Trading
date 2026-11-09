@@ -1,0 +1,31 @@
+{
+    "initial_capital": 50000.0,
+    "final_equity": 49532.35,
+    "total_net_pnl_usd": -467.65,
+    "total_return_pct": -0.94,
+    "total_trades": 48,
+    "winning_trades": 14,
+    "losing_trades": 34,
+    "break_even_trades": 0,
+    "win_rate_pct": 29.17,
+    "profit_factor": 0.66,
+    "gross_profit_usd": 922.85,
+    "gross_loss_usd": 1390.5,
+    "total_commissions_usd": 136.4,
+    "total_slippage_usd": 137.5,
+    "max_drawdown_usd": 570.42,
+    "max_drawdown_pct": 1.14,
+    "sharpe_ratio": -1.13,
+    "sortino_ratio": -0.98,
+    "calmar_ratio": -0.82,
+    "exit_reasons": {
+        "TAKE_PROFIT": 14,
+        "STOP_LOSS": 34,
+        "CIRCUIT_BREAKER": 0,
+        "SESSION_CLOSE": 0
+    },
+    "avg_jump_penalty_factor": 1.0,
+    "jump_penalized_trades_count": 0,
+    "is_prop_breached": false,
+    "breach_reason": "None (Compliant)"
+}
